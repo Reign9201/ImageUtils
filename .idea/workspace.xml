@@ -10,77 +10,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="d7774765-60ab-4606-b469-7c0a7a9eb12c" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/ImageConvertUtils/.gitignore" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ImageConvertUtils/build.gradle" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ImageConvertUtils/consumer-rules.pro" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ImageConvertUtils/proguard-rules.pro" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ImageConvertUtils/src/androidTest/java/com/yancy/imageconvertutils/ExampleInstrumentedTest.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ImageConvertUtils/src/main/AndroidManifest.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ImageConvertUtils/src/main/cpp/CMakeLists.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ImageConvertUtils/src/main/cpp/imageConvert/CMakeLists.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ImageConvertUtils/src/main/cpp/libyuv/CMakeLists.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ImageConvertUtils/src/main/cpp/libyuv/include/libyuv.h" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ImageConvertUtils/src/main/cpp/libyuv/include/libyuv/basic_types.h" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ImageConvertUtils/src/main/cpp/libyuv/include/libyuv/compare.h" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ImageConvertUtils/src/main/cpp/libyuv/include/libyuv/convert.h" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ImageConvertUtils/src/main/cpp/libyuv/include/libyuv/convert_argb.h" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ImageConvertUtils/src/main/cpp/libyuv/include/libyuv/convert_from.h" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ImageConvertUtils/src/main/cpp/libyuv/include/libyuv/convert_from_argb.h" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ImageConvertUtils/src/main/cpp/libyuv/include/libyuv/cpu_id.h" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ImageConvertUtils/src/main/cpp/libyuv/include/libyuv/mjpeg_decoder.h" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ImageConvertUtils/src/main/cpp/libyuv/include/libyuv/planar_functions.h" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ImageConvertUtils/src/main/cpp/libyuv/include/libyuv/rotate.h" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ImageConvertUtils/src/main/cpp/libyuv/include/libyuv/rotate_argb.h" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ImageConvertUtils/src/main/cpp/libyuv/include/libyuv/row.h" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ImageConvertUtils/src/main/cpp/libyuv/include/libyuv/scale.h" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ImageConvertUtils/src/main/cpp/libyuv/include/libyuv/scale_argb.h" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ImageConvertUtils/src/main/cpp/libyuv/include/libyuv/scale_row.h" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ImageConvertUtils/src/main/cpp/libyuv/include/libyuv/version.h" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ImageConvertUtils/src/main/cpp/libyuv/include/libyuv/video_common.h" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ImageConvertUtils/src/main/cpp/libyuv/source/compare.cc" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ImageConvertUtils/src/main/cpp/libyuv/source/compare_common.cc" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ImageConvertUtils/src/main/cpp/libyuv/source/compare_gcc.cc" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ImageConvertUtils/src/main/cpp/libyuv/source/compare_neon.cc" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ImageConvertUtils/src/main/cpp/libyuv/source/compare_neon64.cc" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ImageConvertUtils/src/main/cpp/libyuv/source/compare_win.cc" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ImageConvertUtils/src/main/cpp/libyuv/source/convert.cc" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ImageConvertUtils/src/main/cpp/libyuv/source/convert_argb.cc" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ImageConvertUtils/src/main/cpp/libyuv/source/convert_from.cc" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ImageConvertUtils/src/main/cpp/libyuv/source/convert_from_argb.cc" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ImageConvertUtils/src/main/cpp/libyuv/source/convert_jpeg.cc" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ImageConvertUtils/src/main/cpp/libyuv/source/convert_to_argb.cc" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ImageConvertUtils/src/main/cpp/libyuv/source/convert_to_i420.cc" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ImageConvertUtils/src/main/cpp/libyuv/source/cpu_id.cc" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ImageConvertUtils/src/main/cpp/libyuv/source/mjpeg_decoder.cc" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ImageConvertUtils/src/main/cpp/libyuv/source/mjpeg_validate.cc" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ImageConvertUtils/src/main/cpp/libyuv/source/planar_functions.cc" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ImageConvertUtils/src/main/cpp/libyuv/source/rotate.cc" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ImageConvertUtils/src/main/cpp/libyuv/source/rotate_argb.cc" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ImageConvertUtils/src/main/cpp/libyuv/source/rotate_mips.cc" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ImageConvertUtils/src/main/cpp/libyuv/source/rotate_neon.cc" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ImageConvertUtils/src/main/cpp/libyuv/source/rotate_neon64.cc" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ImageConvertUtils/src/main/cpp/libyuv/source/row_any.cc" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ImageConvertUtils/src/main/cpp/libyuv/source/row_common.cc" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ImageConvertUtils/src/main/cpp/libyuv/source/row_gcc.cc" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ImageConvertUtils/src/main/cpp/libyuv/source/row_mips.cc" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ImageConvertUtils/src/main/cpp/libyuv/source/row_neon.cc" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ImageConvertUtils/src/main/cpp/libyuv/source/row_neon64.cc" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ImageConvertUtils/src/main/cpp/libyuv/source/row_win.cc" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ImageConvertUtils/src/main/cpp/libyuv/source/scale.cc" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ImageConvertUtils/src/main/cpp/libyuv/source/scale_any.cc" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ImageConvertUtils/src/main/cpp/libyuv/source/scale_argb.cc" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ImageConvertUtils/src/main/cpp/libyuv/source/scale_common.cc" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ImageConvertUtils/src/main/cpp/libyuv/source/scale_gcc.cc" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ImageConvertUtils/src/main/cpp/libyuv/source/scale_mips.cc" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ImageConvertUtils/src/main/cpp/libyuv/source/scale_neon.cc" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ImageConvertUtils/src/main/cpp/libyuv/source/scale_neon64.cc" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ImageConvertUtils/src/main/cpp/libyuv/source/scale_win.cc" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ImageConvertUtils/src/main/cpp/libyuv/source/video_common.cc" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ImageConvertUtils/src/main/java/com/yancy/imageconvertutils/ImageConvertUtils.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ImageConvertUtils/src/main/res/values/strings.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ImageConvertUtils/src/test/java/com/yancy/imageconvertutils/ExampleUnitTest.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/src/main/res/mipmap-xhdpi/test.png" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -211,29 +142,11 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="false">
+      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/.gitignore">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="420">
-              <caret line="20" selection-start-line="20" selection-end-line="20" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/ImageConvertUtils/.gitignore">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="42">
-              <caret line="2" column="5" selection-start-line="2" selection-start-column="5" selection-end-line="2" selection-end-column="5" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/ImageConvertUtils/build.gradle">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="735">
-              <caret line="38" column="16" selection-start-line="38" selection-start-column="16" selection-end-line="38" selection-end-column="16" />
+            <state relative-caret-position="441">
+              <caret line="21" lean-forward="true" selection-start-line="21" selection-end-line="21" />
             </state>
           </provider>
         </entry>
@@ -270,8 +183,8 @@
         <option value="$PROJECT_DIR$/ImageConvertUtils/src/main/cpp/image.c" />
         <option value="$PROJECT_DIR$/ImageConvertUtils/src/main/cpp/CMakeLists.txt" />
         <option value="$PROJECT_DIR$/ImageConvertUtils/src/main/cpp/libyuv/CMakeLists.txt" />
-        <option value="$PROJECT_DIR$/.gitignore" />
         <option value="$PROJECT_DIR$/ImageConvertUtils/.gitignore" />
+        <option value="$PROJECT_DIR$/.gitignore" />
       </list>
     </option>
   </component>
@@ -356,7 +269,58 @@
             <path>
               <item name="ImageUtils" type="b2602c69:ProjectViewProjectNode" />
               <item name="ImageUtils" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
+              <item name="app" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
+            </path>
+            <path>
+              <item name="ImageUtils" type="b2602c69:ProjectViewProjectNode" />
+              <item name="ImageUtils" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
+              <item name="app" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="ImageUtils" type="b2602c69:ProjectViewProjectNode" />
+              <item name="ImageUtils" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
               <item name="ImageConvertUtils" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
+            </path>
+            <path>
+              <item name="ImageUtils" type="b2602c69:ProjectViewProjectNode" />
+              <item name="ImageUtils" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
+              <item name="ImageConvertUtils" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="ImageUtils" type="b2602c69:ProjectViewProjectNode" />
+              <item name="ImageUtils" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
+              <item name="ImageConvertUtils" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="main" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="ImageUtils" type="b2602c69:ProjectViewProjectNode" />
+              <item name="ImageUtils" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
+              <item name="ImageConvertUtils" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="main" type="462c0819:PsiDirectoryNode" />
+              <item name="cpp" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="ImageUtils" type="b2602c69:ProjectViewProjectNode" />
+              <item name="ImageUtils" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
+              <item name="ImageConvertUtils" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="main" type="462c0819:PsiDirectoryNode" />
+              <item name="cpp" type="462c0819:PsiDirectoryNode" />
+              <item name="libyuv" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="ImageUtils" type="b2602c69:ProjectViewProjectNode" />
+              <item name="ImageUtils" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
+              <item name="ImageConvertUtils" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="main" type="462c0819:PsiDirectoryNode" />
+              <item name="cpp" type="462c0819:PsiDirectoryNode" />
+              <item name="libyuv" type="462c0819:PsiDirectoryNode" />
+              <item name="source" type="462c0819:PsiDirectoryNode" />
             </path>
           </expand>
           <select />
@@ -365,6 +329,7 @@
     </panes>
   </component>
   <component name="PropertiesComponent">
+    <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="android.project.structure.last.selected" value="SDK Location" />
     <property name="android.project.structure.proportion" value="0.15" />
     <property name="android.sdk.path" value="D:/Android/Sdk" />
@@ -557,6 +522,7 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1936" height="1056" extended-state="6" />
+    <editor active="true" />
     <layout>
       <window_info id="Designer" />
       <window_info id="Build Variants" side_tool="true" />
@@ -777,17 +743,31 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/.gitignore">
+    <entry file="file://$PROJECT_DIR$/app/.gitignore">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="420">
-          <caret line="20" selection-start-line="20" selection-end-line="20" />
+        <state relative-caret-position="21">
+          <caret line="1" lean-forward="true" selection-start-line="1" selection-end-line="1" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/ImageConvertUtils/.gitignore">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="42">
-          <caret line="2" column="5" selection-start-line="2" selection-start-column="5" selection-end-line="2" selection-end-column="5" />
+        <state relative-caret-position="84">
+          <caret line="4" column="20" lean-forward="true" selection-start-line="4" selection-start-column="20" selection-end-line="4" selection-end-column="20" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/ImageConvertUtils/src/main/cpp/libyuv/source/convert.cc">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-21041">
+          <caret line="18" lean-forward="true" selection-start-line="18" selection-end-line="18" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/.gitignore">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="441">
+          <caret line="21" lean-forward="true" selection-start-line="21" selection-end-line="21" />
         </state>
       </provider>
     </entry>
