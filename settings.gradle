@@ -1,0 +1,2 @@
+include ':app', ':ImageConvertUtils'
+rootProject.name='ImageUtils'
