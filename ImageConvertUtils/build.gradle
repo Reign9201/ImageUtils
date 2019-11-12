@@ -8,11 +8,10 @@ android {
 
     defaultConfig {
         minSdkVersion 23
-        targetSdkVersion 29
+        targetSdkVersion 23
         versionCode 1
         versionName "1.0"
 
-        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles 'consumer-rules.pro'
 
         externalNativeBuild {
@@ -31,7 +30,8 @@ android {
                         '-DANDROID_TOOLCHAIN=clang',
                         '-DANDROID_STL=gnustl_static'
 
-                abiFilters /*'x86', 'armeabi', */ 'armeabi-v7a'
+                //abiFilters /*'x86', 'armeabi', */ 'armeabi-v7a'/*,'arm64-v8a'*/
+                abiFilters 'arm64-v8a'
             }
         }
     }
@@ -45,7 +45,7 @@ android {
 
     externalNativeBuild {
         cmake {
-            path "src/main/cpp/CMakeLists.txt"
+            path "src/main/jni/CMakeLists.txt"
         }
     }
 
@@ -61,9 +61,6 @@ android {
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
-    implementation 'androidx.appcompat:appcompat:1.1.0'
+    implementation 'com.android.support:appcompat-v7:26.1.0'
     implementation 'androidx.core:core-ktx:1.1.0'
-    testImplementation 'junit:junit:4.12'
-    androidTestImplementation 'androidx.test.ext:junit:1.1.1'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
 }

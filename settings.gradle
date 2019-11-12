@@ -1,2 +1,4 @@
-include ':app', ':ImageConvertUtils'
-rootProject.name='ImageUtils'
+include ':app'
+//include ':ImageConvertUtils'
+include ':YuvUtils'
+rootProject.name = 'ImageUtils'
