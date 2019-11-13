@@ -10,11 +10,19 @@
 #include <android/bitmap.h>
 #include "logger.hpp"
 
-using namespace libyuv;
+//using namespace libyuv;
 
-class YuvUtils {
-public:
-    void nv21ToArgb(jbyte *nv21data, jint width, jint height, uint8 *argbData);
-};
+#ifdef __cplusplus
+extern "C" {
+#endif
+JNIEXPORT int test(JNIEnv *env, jclass clazz);
+
+JNIEXPORT jbyteArray bitmapToNV21(JNIEnv *env, jclass clazz,jobject jbitmap);
+
+
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif //IMAGEUTILS_YUVUTILS_H
