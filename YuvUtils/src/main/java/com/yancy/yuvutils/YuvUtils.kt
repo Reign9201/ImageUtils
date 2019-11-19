@@ -19,8 +19,11 @@ object YuvUtils {
     external fun bitmapToNV21(bitmap: Bitmap?): ByteArray?
 
     @JvmStatic
-    external fun NV21ToRGBA_8888(nv21Data: ByteArray, width: Int, height: Int): ByteArray?
+    external fun nv21ToRgba8888(nv21Data: ByteArray, width: Int, height: Int): ByteArray?
 
     @JvmStatic
-    external fun NV21ToBitmap8888(nv21Data: ByteArray, width: Int, height: Int): Bitmap?
+    external fun nv21ToBitmap8888(nv21Data: ByteArray, width: Int, height: Int): Bitmap?
+
+    @JvmStatic
+    external fun nv21ToBitmap565(nv21Data: ByteArray, width: Int, height: Int): Bitmap?
 }

@@ -2,13 +2,15 @@
 
 
 #include "YuvUtils.h"
+#include "head/BitmapHelper.hpp"
 #include <string.h>
 
 static JNINativeMethod gMethods[] = {
         {"test",             "()I",                             (void *) test},
         {"bitmapToNV21",     "(Landroid/graphics/Bitmap;)[B",   (void *) bitmapToNV21},
-        {"NV21ToRGBA_8888",  "([BII)[B",                        (void *) NV21ToRGBA_8888},
-        {"NV21ToBitmap8888", "([BII)Landroid/graphics/Bitmap;", (void *) NV21ToBitmap8888}
+        {"nv21ToRgba8888",   "([BII)[B",                        (void *) NV21ToRGBA_8888},
+        {"nv21ToBitmap8888", "([BII)Landroid/graphics/Bitmap;", (void *) NV21ToBitmap8888},
+        {"nv21ToBitmap565",  "([BII)Landroid/graphics/Bitmap;", (void *) NV21ToBitmap565}
 
 };
 
@@ -115,8 +117,8 @@ NV21ToRGBA_8888(JNIEnv *env, jclass clazz, jbyteArray nv21Data, jint width, jint
     jbyteArray rgba = env->NewByteArray(width * height * 4);
     env->SetByteArrayRegion(rgba, 0, width * height * 4, reinterpret_cast<const jbyte *>(dst_data));
 
-    //env->ReleaseByteArrayElements(nv21Data, src_data, JNI_FALSE);
-    //  delete[] dst_data;
+    env->ReleaseByteArrayElements(nv21Data, src_data, JNI_FALSE);
+    delete[] dst_data;
 
 
     return rgba;
@@ -138,6 +140,7 @@ int NV21ToRGBA(uint8 *src_nv21_data, int width, int height, uint8 *dst_rgba) {
     return res;
 }
 
+
 jobject NV21ToBitmap8888(JNIEnv *env, jclass clazz, jbyteArray nv21Data, jint width, jint height) {
     jbyte *src_data = env->GetByteArrayElements(nv21Data, JNI_FALSE);
 
@@ -145,7 +148,21 @@ jobject NV21ToBitmap8888(JNIEnv *env, jclass clazz, jbyteArray nv21Data, jint wi
         logger::error("nv21 data error, please check it.");
         return NULL;
     }
+    auto callback = [=](unsigned char *pixel) -> void {
+        NV21ToRGBA(reinterpret_cast<uint8 *>(src_data), width, height, pixel);
+    };
 
+    jobject jbitmap = createBitmap8888(env, width, height, callback);
+
+    // 释放资源
+    env->ReleaseByteArrayElements(nv21Data, src_data, JNI_FALSE);
+
+    return jbitmap;
+
+}
+
+template<typename Func>
+jobject createBitmap8888(JNIEnv *env, int width, int height, Func callback) {
     jclass bitmapClazz = env->FindClass("android/graphics/Bitmap");
     jmethodID createBitmap = env->GetStaticMethodID(bitmapClazz, "createBitmap",
                                                     "(IILandroid/graphics/Bitmap$Config;)Landroid/graphics/Bitmap;");
@@ -155,25 +172,29 @@ jobject NV21ToBitmap8888(JNIEnv *env, jclass clazz, jbyteArray nv21Data, jint wi
     jobject jbitmap = env->CallStaticObjectMethod(bitmapClazz, createBitmap, width, height, config);
 
     AndroidBitmapInfo info;
-    uint8 *pixels = 0;
+    unsigned char *pixels = 0;
     try {
         AndroidBitmap_getInfo(env, jbitmap, &info);
         AndroidBitmap_lockPixels(env, jbitmap, reinterpret_cast<void **>(&pixels));
 
-        NV21ToRGBA(reinterpret_cast<uint8 *>(src_data), width, height, pixels);
+        callback(pixels);
+
         AndroidBitmap_unlockPixels(env, jbitmap);
 
     } catch (...) {
         return NULL;
     }
-
-    // 释放资源
-    env->ReleaseByteArrayElements(nv21Data, src_data, JNI_FALSE);
-
-
     return jbitmap;
-
 }
+
+
+jobject NV21ToBitmap565(JNIEnv *env, jclass clazz, jbyteArray nv21Data, jint width, jint height) {
+
+
+    return nullptr;
+}
+
+
 
 
 

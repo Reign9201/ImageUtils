@@ -19,7 +19,9 @@ set_target_properties(libyuv_static PROPERTIES IMPORTED_LOCATION ${LIBS_DIRECTOR
 add_library(
         YuvUtils
         SHARED
-        YuvUtils.cpp)
+        YuvUtils.cpp
+        core/BitmapHelper.cpp
+)
 
 
 find_library(log-lib log)
