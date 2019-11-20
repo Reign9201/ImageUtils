@@ -23,7 +23,6 @@ class MainActivity : AppCompatActivity() {
         val bitmap = BitmapFactory.decodeFile("/sdcard/test.png")
 
         //  LogUtils.e("---${bitmap.getPixel(bitmap.width, bitmap.height)}")
-        Bitmap.Config.ARGB_8888
 
 
         val bitmapToNV21 = YuvUtils.bitmapToNV21(bitmap)
@@ -56,10 +55,21 @@ class MainActivity : AppCompatActivity() {
                  LogUtils.e("is null.")
              }*/
 
-            val b = YuvUtils.nv21ToBitmap8888(bitmapToNV21, bitmap.width, bitmap.height)
+            /*val b = YuvUtils.nv21ToBitmap565(bitmapToNV21, bitmap.width, bitmap.height)
             b?.apply {
                 LogUtils.e("config = ${b.config}")
                 imageView.setImageBitmap(b)
+            } ?: LogUtils.e("kong le o ...")*/
+
+            val nv21ToI420 = YuvUtils.nv21ToI420(bitmapToNV21, bitmap.width, bitmap.height)
+            nv21ToI420?.apply {
+                val i420ToBitmap8888 = YuvUtils.i420ToBitmap8888(this, bitmap.width, bitmap.height)
+                i420ToBitmap8888?.apply {
+                    imageView.setImageBitmap(i420ToBitmap8888)
+                }?:LogUtils.e("糟糕了，，，，")
+
+
+
             } ?: LogUtils.e("kong le o ...")
 
 

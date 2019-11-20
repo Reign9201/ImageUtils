@@ -20,7 +20,7 @@ add_library(
         YuvUtils
         SHARED
         YuvUtils.cpp
-        core/BitmapHelper.cpp
+        core/ColorConvert.cpp
 )
 
 

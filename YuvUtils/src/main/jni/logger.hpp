@@ -1,5 +1,5 @@
 //
-// Created by 18081333 on 2019/6/20.
+// Created by XuYanjun on 2019/6/20.
 //
 
 #ifndef FACESDK_LOGGER_HPP

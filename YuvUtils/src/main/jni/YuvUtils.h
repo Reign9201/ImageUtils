@@ -1,11 +1,11 @@
 //
-// Created by 18081333 on 2019/11/12.
+// Created by XuYanjun on 2019/11/12.
 //
 
 #ifndef IMAGEUTILS_YUVUTILS_H
 #define IMAGEUTILS_YUVUTILS_H
 
-#include <libyuv.h>
+#include "head/ColorConvert.hpp"
 #include <jni.h>
 #include <android/bitmap.h>
 #include "logger.hpp"
@@ -27,14 +27,20 @@ JNIEXPORT jbyteArray bitmapToNV21(JNIEnv *env, jclass clazz, jobject jbitmap);
 JNIEXPORT jbyteArray
 NV21ToRGBA_8888(JNIEnv *env, jclass clazz, jbyteArray nv21Data, jint width, jint height);
 
+JNIEXPORT jbyteArray
+NV21ToRGB_565(JNIEnv *env, jclass clazz, jbyteArray nv21Data, jint width, jint height);
+
 JNIEXPORT jobject
 NV21ToBitmap8888(JNIEnv *env, jclass clazz, jbyteArray nv21Data, jint width, jint height);
 
 JNIEXPORT jobject
 NV21ToBitmap565(JNIEnv *env, jclass clazz, jbyteArray nv21Data, jint width, jint height);
 
-int NV21ToRGBA(uint8 *src_nv21_data, int width, int height, uint8 *dst_rgba);
+JNIEXPORT jobject
+I420ToBitmap8888(JNIEnv *env, jclass clazz, jbyteArray i420Data, jint width, jint height);
 
+JNIEXPORT jbyteArray
+NV21ToI420s(JNIEnv *env, jclass clazz, jbyteArray nv21Data, jint width, jint height);
 
 
 

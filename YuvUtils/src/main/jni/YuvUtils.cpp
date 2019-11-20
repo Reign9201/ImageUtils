@@ -10,7 +10,9 @@ static JNINativeMethod gMethods[] = {
         {"bitmapToNV21",     "(Landroid/graphics/Bitmap;)[B",   (void *) bitmapToNV21},
         {"nv21ToRgba8888",   "([BII)[B",                        (void *) NV21ToRGBA_8888},
         {"nv21ToBitmap8888", "([BII)Landroid/graphics/Bitmap;", (void *) NV21ToBitmap8888},
-        {"nv21ToBitmap565",  "([BII)Landroid/graphics/Bitmap;", (void *) NV21ToBitmap565}
+        {"nv21ToBitmap565",  "([BII)Landroid/graphics/Bitmap;", (void *) NV21ToBitmap565},
+        {"nv21ToI420",       "([BII)[B",                        (void *) NV21ToI420s},
+        {"i420ToBitmap8888", "([BII)Landroid/graphics/Bitmap;", (void *) I420ToBitmap8888}
 
 };
 
@@ -124,23 +126,6 @@ NV21ToRGBA_8888(JNIEnv *env, jclass clazz, jbyteArray nv21Data, jint width, jint
     return rgba;
 }
 
-int NV21ToRGBA(uint8 *src_nv21_data, int width, int height, uint8 *dst_rgba) {
-
-    int res = libyuv::NV21ToARGB(src_nv21_data, width,
-                                 src_nv21_data + width * height, width,
-                                 dst_rgba, width * 4,
-                                 width, height);
-
-    //logger::error("res--->", res);
-    if (res != 0) { return -1; }
-
-    // 实测，libyuv中的ABGR格式对应Android Bitmap中的ARGB_8888
-    res = libyuv::ARGBToABGR(dst_rgba, width * 4, dst_rgba, width * 4, width, height);
-
-    return res;
-}
-
-
 jobject NV21ToBitmap8888(JNIEnv *env, jclass clazz, jbyteArray nv21Data, jint width, jint height) {
     jbyte *src_data = env->GetByteArrayElements(nv21Data, JNI_FALSE);
 
@@ -152,7 +137,7 @@ jobject NV21ToBitmap8888(JNIEnv *env, jclass clazz, jbyteArray nv21Data, jint wi
         NV21ToRGBA(reinterpret_cast<uint8 *>(src_data), width, height, pixel);
     };
 
-    jobject jbitmap = createBitmap8888(env, width, height, callback);
+    jobject jbitmap = createBitmap(env, width, height, callback);
 
     // 释放资源
     env->ReleaseByteArrayElements(nv21Data, src_data, JNI_FALSE);
@@ -162,12 +147,14 @@ jobject NV21ToBitmap8888(JNIEnv *env, jclass clazz, jbyteArray nv21Data, jint wi
 }
 
 template<typename Func>
-jobject createBitmap8888(JNIEnv *env, int width, int height, Func callback) {
+jobject createBitmap(JNIEnv *env, int width, int height, Func callback, BitmapFormat format) {
     jclass bitmapClazz = env->FindClass("android/graphics/Bitmap");
     jmethodID createBitmap = env->GetStaticMethodID(bitmapClazz, "createBitmap",
                                                     "(IILandroid/graphics/Bitmap$Config;)Landroid/graphics/Bitmap;");
     jclass cls = env->FindClass("android/graphics/Bitmap$Config");
-    jfieldID fid = env->GetStaticFieldID(cls, "ARGB_8888", "Landroid/graphics/Bitmap$Config;");
+    jfieldID fid = env->GetStaticFieldID(cls, formatToStr(format),
+                                         "Landroid/graphics/Bitmap$Config;");
+
     jobject config = env->GetStaticObjectField(cls, fid);
     jobject jbitmap = env->CallStaticObjectMethod(bitmapClazz, createBitmap, width, height, config);
 
@@ -189,9 +176,54 @@ jobject createBitmap8888(JNIEnv *env, int width, int height, Func callback) {
 
 
 jobject NV21ToBitmap565(JNIEnv *env, jclass clazz, jbyteArray nv21Data, jint width, jint height) {
+    jbyte *src_data = env->GetByteArrayElements(nv21Data, JNI_FALSE);
 
+    if (height * 3.0 / 2.0 * width != env->GetArrayLength(nv21Data)) {
+        logger::error("nv21 data error, please check it.");
+        return NULL;
+    }
+    auto callback = [=](unsigned char *pixel) -> void {
+        NV21ToRGB(reinterpret_cast<uint8 *>(src_data), width, height, pixel);
+    };
 
-    return nullptr;
+    jobject jbitmap = createBitmap(env, width, height, callback, RGB_565);
+
+    // 释放资源
+    env->ReleaseByteArrayElements(nv21Data, src_data, JNI_FALSE);
+
+    return jbitmap;
+}
+
+jbyteArray NV21ToI420s(JNIEnv *env, jclass clazz, jbyteArray nv21Data, jint width, jint height) {
+    jbyte *src_data = env->GetByteArrayElements(nv21Data, JNI_FALSE);
+
+    if (height * 3.0 / 2.0 * width != env->GetArrayLength(nv21Data)) {
+        logger::error("nv21 data error, please check it.");
+        return NULL;
+    }
+    uint8 *dst_i420_data = new uint8[height * width * 3 / 2];
+    NV21ToI420(reinterpret_cast<uint8 *>(src_data), width, height, dst_i420_data);
+    jbyteArray i420 = env->NewByteArray(height * width * 3 / 2);
+    env->SetByteArrayRegion(i420, 0, height * width * 3 / 2,
+                            reinterpret_cast<const jbyte *>(dst_i420_data));
+
+    env->ReleaseByteArrayElements(nv21Data, src_data, 0);
+
+    return i420;
+}
+
+jobject I420ToBitmap8888(JNIEnv *env, jclass clazz, jbyteArray i420Data, jint width, jint height) {
+    jbyte *src_data = env->GetByteArrayElements(i420Data, JNI_FALSE);
+    if (height * 3.0 / 2.0 * width != env->GetArrayLength(i420Data)) {
+        logger::error("i420 data error, please check it.");
+        return NULL;
+    }
+    auto callback = [=](unsigned char*pixel){
+        I420ToRGBA(reinterpret_cast<uint8 *>(src_data), width, height, pixel);
+    };
+    jobject  jbitmap = createBitmap(env, width, height, callback);
+    env->ReleaseByteArrayElements(i420Data, src_data, 0);
+    return jbitmap;
 }
 
 

@@ -26,4 +26,10 @@ object YuvUtils {
 
     @JvmStatic
     external fun nv21ToBitmap565(nv21Data: ByteArray, width: Int, height: Int): Bitmap?
+
+    @JvmStatic
+    external fun nv21ToI420(nv21Data: ByteArray, width: Int, height: Int): ByteArray?
+
+    @JvmStatic
+    external fun i420ToBitmap8888(i420Data: ByteArray, width: Int, height: Int): Bitmap?
 }
