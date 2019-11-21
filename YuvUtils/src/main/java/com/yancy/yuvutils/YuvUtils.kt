@@ -13,23 +13,68 @@ object YuvUtils {
         System.loadLibrary("YuvUtils")
     }
 
-    external fun test(): Int
+    /**
+     * NV21转换成RGBA  对应 Android 中的 ARGB_8888
+     * @param  nv21Data nv21数据
+     * @param width 图像的宽
+     * @param height 图像的高
+     *
+     * @return 返回 RGBA 数据，可能为 null
+     */
+    external fun nv21ToRgba(nv21Data: ByteArray, width: Int, height: Int): ByteArray?
 
-    @JvmStatic
-    external fun bitmapToNV21(bitmap: Bitmap?): ByteArray?
+    external fun nv21ToRgb(nv21Data: ByteArray, width: Int, height: Int): ByteArray?
 
-    @JvmStatic
-    external fun nv21ToRgba8888(nv21Data: ByteArray, width: Int, height: Int): ByteArray?
-
-    @JvmStatic
-    external fun nv21ToBitmap8888(nv21Data: ByteArray, width: Int, height: Int): Bitmap?
-
-    @JvmStatic
-    external fun nv21ToBitmap565(nv21Data: ByteArray, width: Int, height: Int): Bitmap?
-
-    @JvmStatic
     external fun nv21ToI420(nv21Data: ByteArray, width: Int, height: Int): ByteArray?
 
-    @JvmStatic
+    external fun nv21ToBitmap8888(nv21Data: ByteArray, width: Int, height: Int): Bitmap?
+
+    external fun nv21ToBitmap565(nv21Data: ByteArray, width: Int, height: Int): Bitmap?
+
+
+
+    external fun i420ToNV21(i420Data: ByteArray, width: Int, height: Int): ByteArray?
+
+    external fun i420ToRgba(i420Data: ByteArray, width: Int, height: Int): ByteArray?
+
+    external fun i420ToRgb(i420Data: ByteArray, width: Int, height: Int): ByteArray?
+
     external fun i420ToBitmap8888(i420Data: ByteArray, width: Int, height: Int): Bitmap?
+
+    external fun i420ToBitmap565(i420Data: ByteArray, width: Int, height: Int): Bitmap?
+
+
+
+    external fun rgbaToNV21(rgbaData: ByteArray, width: Int, height: Int): ByteArray?
+
+    external fun rgbaToI420(rgbaData: ByteArray, width: Int, height: Int): ByteArray?
+
+    external fun rgbaToRgb(rgbaData: ByteArray, width: Int, height: Int): ByteArray?
+
+    external fun rgbaToBitmap8888(rgbaData: ByteArray, width: Int, height: Int): Bitmap?
+
+    external fun rgbaToBitmap565(rgbaData: ByteArray, width: Int, height: Int): Bitmap?
+
+
+
+    external fun rgbToNV21(rgbData: ByteArray, width: Int, height: Int): ByteArray?
+
+    external fun rgbToI420(rgbData: ByteArray, width: Int, height: Int): ByteArray?
+
+    external fun rgbToRgb(rgbData: ByteArray, width: Int, height: Int): ByteArray?
+
+    external fun rgbToBitmap8888(rgbData: ByteArray, width: Int, height: Int): Bitmap?
+
+    external fun rgbToBitmap565(rgbData: ByteArray, width: Int, height: Int): Bitmap?
+
+
+
+    external fun bitmapToNV21(bitmap: Bitmap?): ByteArray?
+
+    external fun bitmapToRgb(bitmap: Bitmap?): ByteArray?
+
+    external fun bitmapToRgba(bitmap: Bitmap?): ByteArray?
+
+    external fun bitmapToI420(bitmap: Bitmap?): ByteArray?
+
 }
