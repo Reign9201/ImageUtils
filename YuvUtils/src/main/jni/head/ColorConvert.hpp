@@ -16,19 +16,29 @@ enum RotateAngle {
 
 int NV21ToRGBA(uint8 *src_nv21_data, int width, int height, uint8 *dst_rgba);
 
-int NV21ToRGB(uint8 *src_nv21_data, int width, int height, uint8 *dst_rgba);
+int NV21ToRGB565(uint8 *src_nv21_data, int width, int height, uint8 *dst_rgba);
 
 int NV21ToI420(uint8 *src_nv21_data, int width, int height, uint8 *dst_I420);
 
+///////////////////////////////////////////////////////////////////////////////////
 
 int I420ToRGBA(uint8*src_i420_data, int width,int height, uint8 *dst_rgba_data);
 
-int I420ToRGB(uint8*src_i420_data, int width,int height, uint8 *dst_rgb_data);
+int I420ToRGB565(uint8*src_i420_data, int width,int height, uint8 *dst_rgb_data);
 
 int I420ToNV21(uint8*src_i420_data, int width,int height, uint8 *dst_nv21_data);
 
+///////////////////////////////////////////////////////////////////////////////////
 
+int RGBAToNV21(uint8 *src_rgba_data, int width, int height, uint8 *dst_nv21_data);
+int RGBAToI420(uint8 *src_rgba_data, int width, int height, uint8 *dst_i420_data);
+int RGBAToRGB565(uint8 *src_rgba_data, int width, int height, uint8 *dst_rgb_data);
 
+///////////////////////////////////////////////////////////////////////////////////
+
+int RGB565ToNV21(uint8 *src_rgb_data, int width, int height, uint8 *dst_nv21_data);
+int RGB565ToI420(uint8 *src_rgb_data, int width, int height, uint8 *dst_i420_data);
+int RGB565ToRGBA(uint8 *src_rgb_data, int width, int height, uint8 *dst_rgba_data);
 
 
 

@@ -41,4 +41,7 @@ template<typename Func>
 jbyteArray
 createColorBytes(JNIEnv *env, jbyteArray data, jbyte *src_data, int dataSize, Func callback);
 
+template<typename Func>
+jbyteArray bitmapToByteArray(JNIEnv *env, jobject jbitmap, Func callback);
+
 #endif //IMAGEUTILS_CPPTOJAVAHELPER_HPP
