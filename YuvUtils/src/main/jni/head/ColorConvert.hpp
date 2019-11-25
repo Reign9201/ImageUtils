@@ -30,9 +30,9 @@ int I420ToNV21(uint8*src_i420_data, int width,int height, uint8 *dst_nv21_data);
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-int RGBAToNV21(uint8 *src_rgba_data, int width, int height, uint8 *dst_nv21_data);
-int RGBAToI420(uint8 *src_rgba_data, int width, int height, uint8 *dst_i420_data);
-int RGBAToRGB565(uint8 *src_rgba_data, int width, int height, uint8 *dst_rgb_data);
+int RGBAToNV21(uint8 *src_rgba_data, int width, int height, uint8 *dst_nv21_data,bool isInMemory = true);
+int RGBAToI420(uint8 *src_rgba_data, int width, int height, uint8 *dst_i420_data,bool isInMemory = true);
+int RGBAToRGB565(uint8 *src_rgba_data, int width, int height, uint8 *dst_rgb_data,bool isInMemory = true);
 
 ///////////////////////////////////////////////////////////////////////////////////
 

@@ -53,13 +53,13 @@ i420ToBitmap565(JNIEnv *env, jclass clazz, jbyteArray i420Data, jint width, jint
 ///////////////////////////////////////////////////////////////////////////////////////////////
 
 JNIEXPORT jbyteArray
-rgbaToNV21(JNIEnv *env, jclass clazz, jbyteArray rgbaData, jint width, jint height);
+rgbaToNV21(JNIEnv *env, jclass clazz, jbyteArray rgbaData, jint width, jint height,jboolean rgbaInMemory);
 
 JNIEXPORT jbyteArray
-rgbaToI420(JNIEnv *env, jclass clazz, jbyteArray rgbaData, jint width, jint height);
+rgbaToI420(JNIEnv *env, jclass clazz, jbyteArray rgbaData, jint width, jint height,jboolean rgbaInMemory);
 
 JNIEXPORT jbyteArray
-rgbaToRgb(JNIEnv *env, jclass clazz, jbyteArray rgbaData, jint width, jint height);
+rgbaToRgb(JNIEnv *env, jclass clazz, jbyteArray rgbaData, jint width, jint height,jboolean rgbaInMemory);
 
 JNIEXPORT jobject
 rgbaToBitmap8888(JNIEnv *env, jclass clazz, jbyteArray rgbaData, jint width, jint height);
@@ -97,7 +97,7 @@ JNIEXPORT jbyteArray bitmapToI420(JNIEnv *env, jclass clazz, jobject jbitmap);
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
 
-jbyte *checkYuv420DataAndConvert(JNIEnv *env, jbyteArray yuv420Data, jint width, jint height);
+jbyte *checkDataAndConvert(JNIEnv *env, jbyteArray yuv420Data,int dataSize);
 
 #ifdef __cplusplus
 }

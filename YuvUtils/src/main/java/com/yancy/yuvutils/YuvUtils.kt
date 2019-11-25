@@ -8,6 +8,7 @@ import android.graphics.Bitmap
  * @author Yancy
  * @date 2019/11/13
  */
+//@Suppress("UNUSED")
 object YuvUtils {
     init {
         System.loadLibrary("YuvUtils")
@@ -32,7 +33,6 @@ object YuvUtils {
     external fun nv21ToBitmap565(nv21Data: ByteArray, width: Int, height: Int): Bitmap?
 
 
-
     external fun i420ToNV21(i420Data: ByteArray, width: Int, height: Int): ByteArray?
 
     external fun i420ToRgba(i420Data: ByteArray, width: Int, height: Int): ByteArray?
@@ -44,29 +44,37 @@ object YuvUtils {
     external fun i420ToBitmap565(i420Data: ByteArray, width: Int, height: Int): Bitmap?
 
 
+    external fun rgbaToNV21(
+        rgbaData: ByteArray,
+        width: Int,
+        height: Int,
+        rgbaInMemory: Boolean = false
+    ): ByteArray?
 
-    external fun rgbaToNV21(rgbaData: ByteArray, width: Int, height: Int): ByteArray?
+    external fun rgbaToI420(
+        rgbaData: ByteArray, width: Int, height: Int,
+        rgbaInMemory: Boolean = false
+    ): ByteArray?
 
-    external fun rgbaToI420(rgbaData: ByteArray, width: Int, height: Int): ByteArray?
-
-    external fun rgbaToRgb(rgbaData: ByteArray, width: Int, height: Int): ByteArray?
+    external fun rgbaToRgb(
+        rgbaData: ByteArray, width: Int, height: Int,
+        rgbaInMemory: Boolean = false
+    ): ByteArray?
 
     external fun rgbaToBitmap8888(rgbaData: ByteArray, width: Int, height: Int): Bitmap?
 
     external fun rgbaToBitmap565(rgbaData: ByteArray, width: Int, height: Int): Bitmap?
 
 
-
     external fun rgbToNV21(rgbData: ByteArray, width: Int, height: Int): ByteArray?
 
     external fun rgbToI420(rgbData: ByteArray, width: Int, height: Int): ByteArray?
 
-    external fun rgbToRgb(rgbData: ByteArray, width: Int, height: Int): ByteArray?
+    external fun rgbToRgba(rgbData: ByteArray, width: Int, height: Int): ByteArray?
 
     external fun rgbToBitmap8888(rgbData: ByteArray, width: Int, height: Int): Bitmap?
 
     external fun rgbToBitmap565(rgbData: ByteArray, width: Int, height: Int): Bitmap?
-
 
 
     external fun bitmapToNV21(bitmap: Bitmap?): ByteArray?
