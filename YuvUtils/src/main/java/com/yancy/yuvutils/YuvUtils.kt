@@ -32,6 +32,7 @@ object YuvUtils {
 
     external fun nv21ToBitmap565(nv21Data: ByteArray, width: Int, height: Int): Bitmap?
 
+    /*****************************************************************************************/
 
     external fun i420ToNV21(i420Data: ByteArray, width: Int, height: Int): ByteArray?
 
@@ -44,26 +45,19 @@ object YuvUtils {
     external fun i420ToBitmap565(i420Data: ByteArray, width: Int, height: Int): Bitmap?
 
 
-    external fun rgbaToNV21(
-        rgbaData: ByteArray,
-        width: Int,
-        height: Int,
-        rgbaInMemory: Boolean = false
-    ): ByteArray?
+    /*****************************************************************************************/
 
-    external fun rgbaToI420(
-        rgbaData: ByteArray, width: Int, height: Int,
-        rgbaInMemory: Boolean = false
-    ): ByteArray?
+    external fun rgbaToNV21(rgbaData: ByteArray, width: Int, height: Int): ByteArray?
 
-    external fun rgbaToRgb(
-        rgbaData: ByteArray, width: Int, height: Int,
-        rgbaInMemory: Boolean = false
-    ): ByteArray?
+    external fun rgbaToI420(rgbaData: ByteArray, width: Int, height: Int): ByteArray?
+
+    external fun rgbaToRgb(rgbaData: ByteArray, width: Int, height: Int): ByteArray?
 
     external fun rgbaToBitmap8888(rgbaData: ByteArray, width: Int, height: Int): Bitmap?
 
     external fun rgbaToBitmap565(rgbaData: ByteArray, width: Int, height: Int): Bitmap?
+
+    /*****************************************************************************************/
 
 
     external fun rgbToNV21(rgbData: ByteArray, width: Int, height: Int): ByteArray?
@@ -77,12 +71,18 @@ object YuvUtils {
     external fun rgbToBitmap565(rgbData: ByteArray, width: Int, height: Int): Bitmap?
 
 
+    /*****************************************************************************************/
+
     external fun bitmapToNV21(bitmap: Bitmap?): ByteArray?
 
     external fun bitmapToRgb(bitmap: Bitmap?): ByteArray?
-
     external fun bitmapToRgba(bitmap: Bitmap?): ByteArray?
-
+    external fun bitmap2Rgba(bitmap: Bitmap?): IntArray?
     external fun bitmapToI420(bitmap: Bitmap?): ByteArray?
+
+    /*****************************************************************************************/
+    external fun intToByte(intArray: IntArray): ByteArray?
+
+    external fun byteToInt(byteArray: ByteArray): IntArray?
 
 }

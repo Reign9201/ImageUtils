@@ -17,6 +17,9 @@ import android.renderscript.Type;
  */
 public class Test {
 
+    public static String convert(byte data){
+        return Integer.toHexString(data & 0xff);
+    }
     public static void main(String[] args) {
         Bitmap bitmap = Bitmap.createBitmap(1,1,Bitmap.Config.ARGB_8888);
 

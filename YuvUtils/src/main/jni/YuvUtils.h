@@ -53,13 +53,13 @@ i420ToBitmap565(JNIEnv *env, jclass clazz, jbyteArray i420Data, jint width, jint
 ///////////////////////////////////////////////////////////////////////////////////////////////
 
 JNIEXPORT jbyteArray
-rgbaToNV21(JNIEnv *env, jclass clazz, jbyteArray rgbaData, jint width, jint height,jboolean rgbaInMemory);
+rgbaToNV21(JNIEnv *env, jclass clazz, jbyteArray rgbaData, jint width, jint height);
 
 JNIEXPORT jbyteArray
-rgbaToI420(JNIEnv *env, jclass clazz, jbyteArray rgbaData, jint width, jint height,jboolean rgbaInMemory);
+rgbaToI420(JNIEnv *env, jclass clazz, jbyteArray rgbaData, jint width, jint height);
 
 JNIEXPORT jbyteArray
-rgbaToRgb(JNIEnv *env, jclass clazz, jbyteArray rgbaData, jint width, jint height,jboolean rgbaInMemory);
+rgbaToRgb(JNIEnv *env, jclass clazz, jbyteArray rgbaData, jint width, jint height);
 
 JNIEXPORT jobject
 rgbaToBitmap8888(JNIEnv *env, jclass clazz, jbyteArray rgbaData, jint width, jint height);
@@ -92,7 +92,16 @@ JNIEXPORT jbyteArray bitmapToRgb(JNIEnv *env, jclass clazz, jobject jbitmap);
 
 JNIEXPORT jbyteArray bitmapToRgba(JNIEnv *env, jclass clazz, jobject jbitmap);
 
+JNIEXPORT jintArray bitmap2Rgba(JNIEnv *env, jclass clazz, jobject jbitmap);
+
 JNIEXPORT jbyteArray bitmapToI420(JNIEnv *env, jclass clazz, jobject jbitmap);
+
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////
+
+JNIEXPORT jbyteArray intToByte(JNIEnv *env, jclass clazz, jintArray intArray);
+JNIEXPORT jintArray byteToInt(JNIEnv *env, jclass clazz, jbyteArray byteArray);
 
 
 ///////////////////////////////////////////////////////////////////////////////////////////////

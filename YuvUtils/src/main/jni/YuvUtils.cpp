@@ -21,9 +21,9 @@ static JNINativeMethod gMethods[] = {
         {"i420ToBitmap565",  "([BII)Landroid/graphics/Bitmap;", (void *) i420ToBitmap565},
 
         // RGBA 转换成其他格式
-        {"rgbaToNV21",       "([BIIZ)[B",                       (void *) rgbaToNV21},
-        {"rgbaToI420",       "([BIIZ)[B",                       (void *) rgbaToI420},
-        {"rgbaToRgb",        "([BIIZ)[B",                       (void *) rgbaToRgb},
+        {"rgbaToNV21",       "([BII)[B",                        (void *) rgbaToNV21},
+        {"rgbaToI420",       "([BII)[B",                        (void *) rgbaToI420},
+        {"rgbaToRgb",        "([BII)[B",                        (void *) rgbaToRgb},
         {"rgbaToBitmap8888", "([BII)Landroid/graphics/Bitmap;", (void *) rgbaToBitmap8888},
         {"rgbaToBitmap565",  "([BII)Landroid/graphics/Bitmap;", (void *) rgbaToBitmap565},
 
@@ -38,7 +38,12 @@ static JNINativeMethod gMethods[] = {
         {"bitmapToNV21",     "(Landroid/graphics/Bitmap;)[B",   (void *) bitmapToNV21},
         {"bitmapToRgb",      "(Landroid/graphics/Bitmap;)[B",   (void *) bitmapToRgb},
         {"bitmapToRgba",     "(Landroid/graphics/Bitmap;)[B",   (void *) bitmapToRgba},
+        {"bitmap2Rgba",      "(Landroid/graphics/Bitmap;)[I",   (void *) bitmap2Rgba},
         {"bitmapToI420",     "(Landroid/graphics/Bitmap;)[B",   (void *) bitmapToI420},
+
+
+        {"intToByte",        "([I)[B",                          (void *) intToByte},
+        {"byteToInt",        "([B)[I",                          (void *) byteToInt},
 
 };
 
@@ -179,36 +184,31 @@ i420ToBitmap565(JNIEnv *env, jclass clazz, jbyteArray i420Data, jint width, jint
     return createBitmap(env, i420Data, src_data, width, height, callback, RGB_565);
 }
 
-jbyteArray rgbaToNV21(JNIEnv *env, jclass clazz, jbyteArray rgbaData, jint width, jint height,
-                      jboolean rgbaInMemory) {
+jbyteArray rgbaToNV21(JNIEnv *env, jclass clazz, jbyteArray rgbaData, jint width, jint height) {
     jbyte *src_data = checkDataAndConvert(env, rgbaData, width * height * 4);
     //logger::error("rgbaInMemory = ", rgbaInMemory);
 
+    logger::error("==============", src_data[0] & 0xff);
     auto callback = [=](uint8 *dst_data) -> int {
         return RGBAToNV21(reinterpret_cast<uint8 *>(src_data), (width + 1) / 2 * 2, height,
-                          dst_data,
-                          rgbaInMemory);
+                          dst_data);
     };
     return createColorBytes(env, rgbaData, src_data,
                             width * height + ((width + 1) / 2) * ((height + 1) / 2) * 2, callback);
 }
 
-jbyteArray rgbaToI420(JNIEnv *env, jclass clazz, jbyteArray rgbaData, jint width, jint height,
-                      jboolean rgbaInMemory) {
+jbyteArray rgbaToI420(JNIEnv *env, jclass clazz, jbyteArray rgbaData, jint width, jint height) {
     jbyte *src_data = checkDataAndConvert(env, rgbaData, width * height * 4);
     auto callback = [=](uint8 *dst_data) -> int {
-        return RGBAToI420(reinterpret_cast<uint8 *>(src_data), width, height, dst_data,
-                          rgbaInMemory);
+        return RGBAToI420(reinterpret_cast<uint8 *>(src_data), width, height, dst_data);
     };
     return createColorBytes(env, rgbaData, src_data, width * height * 3 / 2, callback);
 }
 
-jbyteArray rgbaToRgb(JNIEnv *env, jclass clazz, jbyteArray rgbaData, jint width, jint height,
-                     jboolean rgbaInMemory) {
+jbyteArray rgbaToRgb(JNIEnv *env, jclass clazz, jbyteArray rgbaData, jint width, jint height) {
     jbyte *src_data = checkDataAndConvert(env, rgbaData, width * height * 4);
     auto callback = [=](uint8 *dst_data) -> int {
-        return RGBAToRGB565(reinterpret_cast<uint8 *>(src_data), width, height, dst_data,
-                            rgbaInMemory);
+        return RGBAToRGB565(reinterpret_cast<uint8 *>(src_data), width, height, dst_data);
     };
     return createColorBytes(env, rgbaData, src_data, width * height * 2, callback);
 }
@@ -303,10 +303,7 @@ jbyteArray bitmapToRgb(JNIEnv *env, jclass clazz, jobject jbitmap) {
         *dataSize = width * height * 2;
         *target_data = new uint8[*dataSize];
         if (format == ARGB_8888) {
-            //memcpy(*target_data, pixel, sizeof(uint8) * width * height * 4);
-            //return 0;
             return RGBAToRGB565(pixel, width, height, *target_data);
-
         } else if (format == RGB_565) {
             memcpy(*target_data, pixel, sizeof(uint8) * width * height * 2);
             return 0;
@@ -327,10 +324,9 @@ jbyteArray bitmapToRgba(JNIEnv *env, jclass clazz, jobject jbitmap) {
         *dataSize = width * height * 4;
         *target_data = new uint8[*dataSize];
         if (format == ARGB_8888) {
-            memcpy(*target_data, pixel, sizeof(uint8) * (*dataSize));
-            //*target_data = pixel;
-            logger::error("[100] = ", *target_data[100]);
-            return 0;
+            memcpy(*target_data, pixel, sizeof(uint8) * width * height * 4);
+            return  0;
+           // return libyuv::ARGBToABGR(pixel, width * 4, *target_data, width * 4, width, height);
         } else if (format == RGB_565) {
             return RGB565ToRGBA(pixel, width, height, *target_data);
         } else {
@@ -340,6 +336,26 @@ jbyteArray bitmapToRgba(JNIEnv *env, jclass clazz, jobject jbitmap) {
 
     return bitmapToByteArray(env, jbitmap, callback);
 }
+
+jintArray bitmap2Rgba(JNIEnv *env, jclass clazz, jobject jbitmap) {
+    if (jbitmap == NULL) {
+        return NULL;
+    }
+    AndroidBitmapInfo info;
+    uint8 *pixels;
+    AndroidBitmap_getInfo(env, jbitmap, &info);
+    AndroidBitmap_lockPixels(env, jbitmap, reinterpret_cast<void **>(&pixels));
+
+
+    int dataSize = info.width * info.height;
+    libyuv::ARGBToABGR(pixels, info.stride, pixels, info.stride, info.width, info.height);
+    jintArray intRgba = env->NewIntArray(dataSize);
+    env->SetIntArrayRegion(intRgba, 0, dataSize, reinterpret_cast<const jint *>(pixels));
+    AndroidBitmap_unlockPixels(env, jbitmap);
+
+    return intRgba;
+}
+
 
 jbyteArray bitmapToI420(JNIEnv *env, jclass clazz, jobject jbitmap) {
 
@@ -364,6 +380,22 @@ jbyte *checkDataAndConvert(JNIEnv *env, jbyteArray yuv420Data, int dataSize) {
         return NULL;
     }
     return env->GetByteArrayElements(yuv420Data, JNI_FALSE);
+}
+
+jbyteArray intToByte(JNIEnv *env, jclass clazz, jintArray intArray) {
+    jint *srcData = env->GetIntArrayElements(intArray, JNI_FALSE);
+    int dataSize = env->GetArrayLength(intArray) * 4;
+    jbyteArray dstData = env->NewByteArray(dataSize);
+    env->SetByteArrayRegion(dstData, 0, dataSize, reinterpret_cast<const jbyte *>(srcData));
+    return dstData;
+}
+
+jintArray byteToInt(JNIEnv *env, jclass clazz, jbyteArray byteArray) {
+    jbyte *srcData = env->GetByteArrayElements(byteArray, JNI_FALSE);
+    int dataSize = env->GetArrayLength(byteArray) / 4;
+    jintArray dstData = env->NewIntArray(dataSize);
+    env->SetIntArrayRegion(dstData, 0, dataSize, reinterpret_cast<const jint *>(srcData));
+    return dstData;
 }
 
 template<typename Func>

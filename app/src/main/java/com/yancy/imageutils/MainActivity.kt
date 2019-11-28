@@ -4,11 +4,27 @@ import android.Manifest
 import android.graphics.*
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import com.yancy.imageutils.test.Test
 import com.yancy.yuvutils.YuvUtils
 import kotlinx.android.synthetic.main.activity_main.*
+import java.nio.ByteBuffer
 import java.util.*
 
 class MainActivity : AppCompatActivity() {
+
+    fun bitmapToARGB(bitmap: Bitmap?): IntArray? {
+        if (bitmap != null) {
+            val width = bitmap.width
+            val height = bitmap.height
+            val argb = IntArray(width * height)
+            bitmap.getPixels(argb, 0, width, 0, 0, width, height)
+
+            return argb
+        }
+        return null
+    }
+
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -21,15 +37,18 @@ class MainActivity : AppCompatActivity() {
         )
             .request(this)
 
+
+
         val bitmap = BitmapFactory.decodeFile("/sdcard/test.png")
         val width = bitmap.width
         val height = bitmap.height
 
+
 //        nv21Convert(bitmap, width, height)
 //        i420Convert(bitmap, width, height)
-//        rgbaConvert(bitmap, width, height)
+        rgbaConvert(bitmap, width, height)
 
-        rgbConvert(bitmap, width, height)
+//        rgbConvert(bitmap, width, height)
 
 
 
@@ -157,6 +176,9 @@ class MainActivity : AppCompatActivity() {
             return
         }
         LogUtils.e("bitmapToRgba.size = ${bitmapToRgba.size}")
+
+
+
         /****************************************************************************************/
         val rgbaToBitmap8888 = YuvUtils.rgbaToBitmap8888(bitmapToRgba, width, height)
         if (rgbaToBitmap8888 == null) {
@@ -164,7 +186,7 @@ class MainActivity : AppCompatActivity() {
             return
         }
         LogUtils.w("rgbaToBitmap8888 format = " + rgbaToBitmap8888.config)
-        //imageView.setImageBitmap(rgbaToBitmap8888)
+       // imageView.setImageBitmap(rgbaToBitmap8888)
 
         /****************************************************************************************/
         val rgbaToBitmap565 = YuvUtils.rgbaToBitmap565(bitmapToRgba, width, height)
@@ -173,7 +195,7 @@ class MainActivity : AppCompatActivity() {
             return
         }
         LogUtils.w("rgbaToBitmap565 format = " + rgbaToBitmap565.config)
-        //imageView.setImageBitmap(rgbaToBitmap565)
+        imageView.setImageBitmap(rgbaToBitmap565)
 
         /****************************************************************************************/
 
@@ -190,7 +212,7 @@ class MainActivity : AppCompatActivity() {
             return
         }
         LogUtils.d("nv21ToBitmap8888 format = ${nv21ToBitmap8888.config}")
-        imageView.setImageBitmap(nv21ToBitmap8888)
+       // imageView.setImageBitmap(nv21ToBitmap8888)
 
         /****************************************************************************************/
         val nv21ToBitmap565 = YuvUtils.nv21ToBitmap565(rgbaToNV21, width, height)
@@ -435,6 +457,7 @@ class MainActivity : AppCompatActivity() {
             LogUtils.e("NV21 转 RGBA 失败")
             return
         }
+
 
         /****************************************************************************************/
         val rgbaToBitmap8888 = YuvUtils.rgbaToBitmap8888(nv21ToRgba, width, height)
