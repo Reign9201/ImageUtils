@@ -1,6 +1,7 @@
 package com.yancy.yuvutils
 
 import android.graphics.Bitmap
+import android.graphics.Rect
 
 /**
  * 说明：
@@ -84,5 +85,46 @@ object YuvUtils {
     external fun intToByte(intArray: IntArray): ByteArray?
 
     external fun byteToInt(byteArray: ByteArray): IntArray?
+
+    /*****************************************************************************************/
+    external fun nv21ToRectBitmap(
+        nv21Data: ByteArray,
+        width: Int,
+        height: Int,
+        degree: Int,
+        rect: Rect
+    ): Bitmap?
+
+    /*****************************************************************************************/
+    external fun multiMixDataToBitmap(
+        data: ByteArray,
+        dataFormat: Int,
+        width: Int,
+        height: Int,
+        degree: Int,
+        rect: Rect?,
+        bitmapConfig: Int,
+        priorityClip:Boolean
+    ): Bitmap?
+
+    fun multiMixDataToBitmap(imageData: ImageData): Bitmap? {
+        imageData.run {
+            val config = when (bitmapConfig) {
+                Bitmap.Config.RGB_565 -> 3
+                Bitmap.Config.ARGB_8888 -> 5
+                else -> throw IllegalStateException("This format is not supported yet.")
+            }
+            return multiMixDataToBitmap(
+                data,
+                dataFormat.format,
+                width,
+                height,
+                degree,
+                rect,
+                config,
+                priorityClip
+            )
+        }
+    }
 
 }

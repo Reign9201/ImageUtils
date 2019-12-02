@@ -99,15 +99,15 @@ int RGBAToNV21(const uint8 *src_rgba_data, int width, int height, uint8 *dst_nv2
 }
 
 int RGBAToI420(const uint8 *src_rgba_data, int width, int height, uint8 *dst_i420_data) {
-    if (libyuv::ABGRToI420(src_rgba_data, width * 4,
+    /*if (libyuv::ABGRToI420(src_rgba_data, width * 4,
                            dst_i420_data, width,
                            dst_i420_data + width * height, width >> 1,
                            dst_i420_data + width * height + (width >> 1) * (height >> 1),
                            width >> 1,
                            width, height) != 0) {
         return -1;
-    }
-    return libyuv::ARGBToI420(src_rgba_data, width * 4,
+    }*/
+    return libyuv::ABGRToI420(src_rgba_data, width * 4,
                               dst_i420_data, width,
                               dst_i420_data + width * height, width >> 1,
                               dst_i420_data + width * height + (width >> 1) * (height >> 1),
@@ -116,8 +116,7 @@ int RGBAToI420(const uint8 *src_rgba_data, int width, int height, uint8 *dst_i42
 
 }
 
-int
-RGBAToRGB565(const uint8 *src_rgba_data, int width, int height, uint8 *dst_rgb_data) {
+int RGBAToRGB565(const uint8 *src_rgba_data, int width, int height, uint8 *dst_rgb_data) {
     uint8 *argb = new uint8[width * height * 4];
     if (libyuv::ABGRToARGB(src_rgba_data, width * 4,
                            argb, width * 4,

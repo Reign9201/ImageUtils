@@ -4,54 +4,56 @@
 #include "YuvUtils.h"
 #include "head/cppToJavaHelper.hpp"
 #include <string.h>
+#include <libyuv.h>
+#include <libyuv/rotate.h>
 
 static JNINativeMethod gMethods[] = {
         // NV21 转换成其他格式
-        {"nv21ToRgba",       "([BII)[B",                        (void *) nv21ToRgba},
-        {"nv21ToRgb",        "([BII)[B",                        (void *) nv21ToRgb565},
-        {"nv21ToI420",       "([BII)[B",                        (void *) nv21ToI420},
-        {"nv21ToBitmap8888", "([BII)Landroid/graphics/Bitmap;", (void *) nv21ToBitmap8888},
-        {"nv21ToBitmap565",  "([BII)Landroid/graphics/Bitmap;", (void *) nv21ToBitmap565},
+        {"nv21ToRgba",           "([BII)[B",                                                   (void *) nv21ToRgba},
+        {"nv21ToRgb",            "([BII)[B",                                                   (void *) nv21ToRgb565},
+        {"nv21ToI420",           "([BII)[B",                                                   (void *) nv21ToI420},
+        {"nv21ToBitmap8888",     "([BII)Landroid/graphics/Bitmap;",                            (void *) nv21ToBitmap8888},
+        {"nv21ToBitmap565",      "([BII)Landroid/graphics/Bitmap;",                            (void *) nv21ToBitmap565},
 
         // I420 转换成其他格式
-        {"i420ToNV21",       "([BII)[B",                        (void *) i420ToNV21},
-        {"i420ToRgba",       "([BII)[B",                        (void *) i420ToRgba},
-        {"i420ToRgb",        "([BII)[B",                        (void *) i420ToRgb},
-        {"i420ToBitmap8888", "([BII)Landroid/graphics/Bitmap;", (void *) i420ToBitmap8888},
-        {"i420ToBitmap565",  "([BII)Landroid/graphics/Bitmap;", (void *) i420ToBitmap565},
+        {"i420ToNV21",           "([BII)[B",                                                   (void *) i420ToNV21},
+        {"i420ToRgba",           "([BII)[B",                                                   (void *) i420ToRgba},
+        {"i420ToRgb",            "([BII)[B",                                                   (void *) i420ToRgb},
+        {"i420ToBitmap8888",     "([BII)Landroid/graphics/Bitmap;",                            (void *) i420ToBitmap8888},
+        {"i420ToBitmap565",      "([BII)Landroid/graphics/Bitmap;",                            (void *) i420ToBitmap565},
 
         // RGBA 转换成其他格式
-        {"rgbaToNV21",       "([BII)[B",                        (void *) rgbaToNV21},
-        {"rgbaToI420",       "([BII)[B",                        (void *) rgbaToI420},
-        {"rgbaToRgb",        "([BII)[B",                        (void *) rgbaToRgb},
-        {"rgbaToBitmap8888", "([BII)Landroid/graphics/Bitmap;", (void *) rgbaToBitmap8888},
-        {"rgbaToBitmap565",  "([BII)Landroid/graphics/Bitmap;", (void *) rgbaToBitmap565},
+        {"rgbaToNV21",           "([BII)[B",                                                   (void *) rgbaToNV21},
+        {"rgbaToI420",           "([BII)[B",                                                   (void *) rgbaToI420},
+        {"rgbaToRgb",            "([BII)[B",                                                   (void *) rgbaToRgb},
+        {"rgbaToBitmap8888",     "([BII)Landroid/graphics/Bitmap;",                            (void *) rgbaToBitmap8888},
+        {"rgbaToBitmap565",      "([BII)Landroid/graphics/Bitmap;",                            (void *) rgbaToBitmap565},
 
         // RGB 转换成其他格式
-        {"rgbToNV21",        "([BII)[B",                        (void *) rgbToNV21},
-        {"rgbToI420",        "([BII)[B",                        (void *) rgbToI420},
-        {"rgbToRgba",        "([BII)[B",                        (void *) rgbToRgba},
-        {"rgbToBitmap8888",  "([BII)Landroid/graphics/Bitmap;", (void *) rgbToBitmap8888},
-        {"rgbToBitmap565",   "([BII)Landroid/graphics/Bitmap;", (void *) rgbToBitmap565},
+        {"rgbToNV21",            "([BII)[B",                                                   (void *) rgbToNV21},
+        {"rgbToI420",            "([BII)[B",                                                   (void *) rgbToI420},
+        {"rgbToRgba",            "([BII)[B",                                                   (void *) rgbToRgba},
+        {"rgbToBitmap8888",      "([BII)Landroid/graphics/Bitmap;",                            (void *) rgbToBitmap8888},
+        {"rgbToBitmap565",       "([BII)Landroid/graphics/Bitmap;",                            (void *) rgbToBitmap565},
 
         // Bitmap 转换成其他格式
-        {"bitmapToNV21",     "(Landroid/graphics/Bitmap;)[B",   (void *) bitmapToNV21},
-        {"bitmapToRgb",      "(Landroid/graphics/Bitmap;)[B",   (void *) bitmapToRgb},
-        {"bitmapToRgba",     "(Landroid/graphics/Bitmap;)[B",   (void *) bitmapToRgba},
-        {"bitmap2Rgba",      "(Landroid/graphics/Bitmap;)[I",   (void *) bitmap2Rgba},
-        {"bitmapToI420",     "(Landroid/graphics/Bitmap;)[B",   (void *) bitmapToI420},
+        {"bitmapToNV21",         "(Landroid/graphics/Bitmap;)[B",                              (void *) bitmapToNV21},
+        {"bitmapToRgb",          "(Landroid/graphics/Bitmap;)[B",                              (void *) bitmapToRgb},
+        {"bitmapToRgba",         "(Landroid/graphics/Bitmap;)[B",                              (void *) bitmapToRgba},
+        {"bitmap2Rgba",          "(Landroid/graphics/Bitmap;)[I",                              (void *) bitmap2Rgba},
+        {"bitmapToI420",         "(Landroid/graphics/Bitmap;)[B",                              (void *) bitmapToI420},
 
+        {"intToByte",            "([I)[B",                                                     (void *) intToByte},
+        {"byteToInt",            "([B)[I",                                                     (void *) byteToInt},
 
-        {"intToByte",        "([I)[B",                          (void *) intToByte},
-        {"byteToInt",        "([B)[I",                          (void *) byteToInt},
+        {"multiMixDataToBitmap", "([BIIIILandroid/graphics/Rect;IZ)Landroid/graphics/Bitmap;", (void *) multiMixDataToBitmap},
 
 };
 
 const char *JNI_NATIVE_INTERFACE_CLASS = "com/yancy/yuvutils/YuvUtils";
 
 
-JNIEXPORT jint
-JNI_OnLoad(JavaVM *vm, void *reserved) {
+JNIEXPORT jint JNI_OnLoad(JavaVM *vm, void *reserved) {
     JNIEnv *env = NULL;
     if (vm->GetEnv((void **) &env, JNI_VERSION_1_6)) {
         return JNI_ERR;
@@ -186,9 +188,6 @@ i420ToBitmap565(JNIEnv *env, jclass clazz, jbyteArray i420Data, jint width, jint
 
 jbyteArray rgbaToNV21(JNIEnv *env, jclass clazz, jbyteArray rgbaData, jint width, jint height) {
     jbyte *src_data = checkDataAndConvert(env, rgbaData, width * height * 4);
-    //logger::error("rgbaInMemory = ", rgbaInMemory);
-
-    logger::error("==============", src_data[0] & 0xff);
     auto callback = [=](uint8 *dst_data) -> int {
         return RGBAToNV21(reinterpret_cast<uint8 *>(src_data), (width + 1) / 2 * 2, height,
                           dst_data);
@@ -325,8 +324,7 @@ jbyteArray bitmapToRgba(JNIEnv *env, jclass clazz, jobject jbitmap) {
         *target_data = new uint8[*dataSize];
         if (format == ARGB_8888) {
             memcpy(*target_data, pixel, sizeof(uint8) * width * height * 4);
-            return  0;
-           // return libyuv::ARGBToABGR(pixel, width * 4, *target_data, width * 4, width, height);
+            return 0;
         } else if (format == RGB_565) {
             return RGB565ToRGBA(pixel, width, height, *target_data);
         } else {
@@ -398,6 +396,139 @@ jintArray byteToInt(JNIEnv *env, jclass clazz, jbyteArray byteArray) {
     return dstData;
 }
 
+jobject
+multiMixDataToBitmap(JNIEnv *env, jclass clazz, jbyteArray byteArray, jint dataFormat, jint width,
+                     jint height, jint degree, jobject rect, jint bitmapConfig,
+                     jboolean priorityClip) {
+
+    int dataSize;
+    uint32 format;
+    libyuv::RotationMode mode;
+    switch (degree) {
+        case 0:
+            mode = libyuv::kRotate0;
+            break;
+        case 90:
+            mode = libyuv::kRotate90;
+            break;
+        case 180:
+            mode = libyuv::kRotate180;
+            break;
+        case -90:
+        case 270:
+            mode = libyuv::kRotate270;
+            break;
+        default:
+            logger::error("degree value error, please check it.");
+            return nullptr;
+    }
+    switch (dataFormat) {
+        case 1:
+            format = libyuv::FOURCC_NV21;
+            dataSize = width * height + ((width + 1) / 2) * ((height + 1) / 2) * 2;
+            break;
+        case 2:
+            format = libyuv::FOURCC_I420;
+            dataSize = width * height + ((width + 1) / 2) * ((height + 1) / 2) * 2;
+            break;
+        case 3:
+            format = libyuv::FOURCC_RGBP; //todo 带确认
+            dataSize = width * height * 2;
+            break;
+        case 5:
+            format = libyuv::FOURCC_ABGR;
+            dataSize = width * height * 4;
+            break;
+        default:
+            logger::error("dataFormat value error, please check it.");
+            return nullptr;
+    }
+    logger::error("size = ", dataSize);
+    jbyte *src_data = checkDataAndConvert(env, byteArray, dataSize);
+
+    int bmpWidth = width;
+    int bmpHeight = height;
+    int crop_x = 0, crop_y = 0;
+    if (rect != nullptr) {
+        jclass rectClazz = env->GetObjectClass(rect);
+        jfieldID rect_left = env->GetFieldID(rectClazz, "left", "I");
+        jfieldID rect_top = env->GetFieldID(rectClazz, "top", "I");
+        jfieldID rect_right = env->GetFieldID(rectClazz, "right", "I");
+        jfieldID rect_bottom = env->GetFieldID(rectClazz, "bottom", "I");
+
+        int left, top, right, bottom;
+        left = env->GetIntField(rect, rect_left);
+        top = env->GetIntField(rect, rect_top);
+        right = env->GetIntField(rect, rect_right);
+        bottom = env->GetIntField(rect, rect_bottom);
+        crop_x = left;
+        crop_y = top;
+        if (priorityClip) {
+            if ((degree == 90 || degree == -90 || degree == 270)) {
+                bmpWidth = bottom - top;
+                bmpHeight = right - left;
+            } else {
+                bmpWidth = right - left;
+                bmpHeight = bottom - top;
+            }
+        } else {
+            bmpWidth = right - left;
+            bmpHeight = bottom - top;
+            if (degree == 90) {
+                crop_x = top;
+                crop_y = height - right;
+                if (right > bmpHeight || bottom > bmpWidth
+                    || crop_x > bmpWidth || crop_y > bmpHeight) {
+                    logger::error("rect width or height more than rotated image width or height, please check it.");
+                    return nullptr;
+                }
+            } else if (degree == 180) {
+                crop_x = width - right;
+                crop_y = height - bottom;
+            } else if (degree == -90 || degree == 270) {
+                crop_x = width - bottom;
+                crop_y = left;
+                if (right > bmpHeight || bottom > bmpWidth
+                    || crop_x > bmpWidth || crop_y > bmpHeight) {
+                    logger::error("rect width or height more than rotated image width or height, please check it.");
+                    return nullptr;
+                }
+            }
+
+        }
+
+    } else if (degree == 90 || degree == -90 || degree == 270) {
+        bmpWidth = height;
+        bmpHeight = width;
+    }
+
+    auto callback = [=](uint8 *pixels) {
+        uint8 *i420_data = new uint8[bmpWidth * bmpHeight + ((bmpWidth + 1) / 2) * ((bmpHeight + 1) / 2) * 2];
+        libyuv::ConvertToI420(reinterpret_cast<unsigned char *>(src_data),
+                              static_cast<size_t>(dataSize),
+                              i420_data, bmpWidth,
+                              i420_data + bmpWidth * bmpHeight, bmpWidth >> 1,
+                              i420_data + bmpWidth * bmpHeight + (bmpWidth >> 1) * (bmpHeight >> 1),
+                              bmpWidth >> 1,
+                              crop_x, crop_y,
+                              width, height,
+                              degree % 180 == 0 ? bmpWidth : bmpHeight,
+                              degree % 180 == 0 ? bmpHeight : bmpWidth,
+                              mode, format
+        );
+
+        if (bitmapConfig == 3) {
+            I420ToRGB565(i420_data, bmpWidth, bmpHeight, pixels);
+        } else {
+            I420ToRGBA(i420_data, bmpWidth, bmpHeight, pixels);
+        }
+    };
+
+
+    return createBitmap(env, byteArray, src_data, bmpWidth, bmpHeight, callback,
+                        bitmapConfig == 3 ? RGB_565 : ARGB_8888);
+}
+
 template<typename Func>
 jobject
 createBitmap(JNIEnv *env, jbyteArray data, jbyte *src_data, int width, int height,
@@ -418,7 +549,7 @@ createBitmap(JNIEnv *env, jbyteArray data, jbyte *src_data, int width, int heigh
                                                   config);
 
     AndroidBitmapInfo info;
-    unsigned char *pixels = 0;
+    uint8 *pixels = 0;
     try {
         AndroidBitmap_getInfo(env, jbitmap, &info);
         AndroidBitmap_lockPixels(env, jbitmap, reinterpret_cast<void **>(&pixels));

@@ -106,7 +106,14 @@ JNIEXPORT jintArray byteToInt(JNIEnv *env, jclass clazz, jbyteArray byteArray);
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
 
-jbyte *checkDataAndConvert(JNIEnv *env, jbyteArray yuv420Data,int dataSize);
+JNIEXPORT jobject
+multiMixDataToBitmap(JNIEnv *env, jclass clazz, jbyteArray byteArray, jint dataFormat, jint width,
+                     jint height, jint degree, jobject rect, jint bitmapConfig,
+                     jboolean priorityClip);
+
+///////////////////////////////////////////////////////////////////////////////////////////////
+
+jbyte *checkDataAndConvert(JNIEnv *env, jbyteArray yuv420Data, int dataSize);
 
 #ifdef __cplusplus
 }

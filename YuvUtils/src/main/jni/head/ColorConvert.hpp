@@ -14,6 +14,11 @@ enum RotateAngle {
     Rotate_90_Negative = -90
 };
 
+struct ImageData{
+
+};
+
+
 int NV21ToRGBA(const uint8 *src_nv21_data, int width, int height, uint8 *dst_rgba);
 
 int NV21ToRGB565(const uint8 *src_nv21_data, int width, int height, uint8 *dst_rgba);
