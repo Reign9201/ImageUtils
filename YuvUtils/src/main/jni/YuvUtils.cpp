@@ -46,7 +46,10 @@ static JNINativeMethod gMethods[] = {
         {"intToByte",            "([I)[B",                                                     (void *) intToByte},
         {"byteToInt",            "([B)[I",                                                     (void *) byteToInt},
 
+        // 将图像数据转换成Bitmap
         {"multiMixDataToBitmap", "([BIIIILandroid/graphics/Rect;IZ)Landroid/graphics/Bitmap;", (void *) multiMixDataToBitmap},
+
+        {"dataMirror",           "([BIIIIZ)[B",                                                (void *) dataMirror},
 
 };
 
@@ -95,7 +98,7 @@ jbyteArray nv21ToRgba(JNIEnv *env, jclass clazz, jbyteArray nv21Data, jint width
     jbyte *src_data = checkDataAndConvert(env, nv21Data,
                                           static_cast<int>(height * 3.0 / 2.0 * width));
     auto callback = [=](uint8 *dst_data) -> int {
-        return NV21ToRGBA(reinterpret_cast<uint8 *>(src_data), width, height, dst_data);
+        return yancy::NV21ToRGBA(reinterpret_cast<uint8 *>(src_data), width, height, dst_data);
     };
     return createColorBytes(env, nv21Data, src_data, width * height * 4, callback);
 
@@ -105,7 +108,7 @@ jbyteArray nv21ToRgb565(JNIEnv *env, jclass clazz, jbyteArray nv21Data, jint wid
     jbyte *src_data = checkDataAndConvert(env, nv21Data,
                                           static_cast<int>(height * 3.0 / 2.0 * width));
     auto callback = [=](uint8 *dst_data) -> int {
-        return NV21ToRGB565(reinterpret_cast<uint8 *>(src_data), width, height, dst_data);
+        return yancy::NV21ToRGB565(reinterpret_cast<uint8 *>(src_data), width, height, dst_data);
     };
     return createColorBytes(env, nv21Data, src_data, width * height * 2, callback);
 }
@@ -114,7 +117,7 @@ jbyteArray nv21ToI420(JNIEnv *env, jclass clazz, jbyteArray nv21Data, jint width
     jbyte *src_data = checkDataAndConvert(env, nv21Data,
                                           static_cast<int>(height * 3.0 / 2.0 * width));
     auto callback = [=](uint8 *dst_data) -> int {
-        return NV21ToI420(reinterpret_cast<uint8 *>(src_data), width, height, dst_data);
+        return yancy::NV21ToI420(reinterpret_cast<uint8 *>(src_data), width, height, dst_data);
     };
     return createColorBytes(env, nv21Data, src_data, width * height * 3 / 2, callback);
 }
@@ -123,7 +126,7 @@ jobject nv21ToBitmap8888(JNIEnv *env, jclass clazz, jbyteArray nv21Data, jint wi
     jbyte *src_data = checkDataAndConvert(env, nv21Data,
                                           static_cast<int>(height * 3.0 / 2.0 * width));
     auto callback = [=](unsigned char *pixel) -> int {
-        return NV21ToRGBA(reinterpret_cast<uint8 *>(src_data), width, height, pixel);
+        return yancy::NV21ToRGBA(reinterpret_cast<uint8 *>(src_data), width, height, pixel);
     };
 
     return createBitmap(env, nv21Data, src_data, width, height, callback);
@@ -133,7 +136,7 @@ jobject nv21ToBitmap565(JNIEnv *env, jclass clazz, jbyteArray nv21Data, jint wid
     jbyte *src_data = checkDataAndConvert(env, nv21Data,
                                           static_cast<int>(height * 3.0 / 2.0 * width));
     auto callback = [=](unsigned char *pixel) -> void {
-        NV21ToRGB565(reinterpret_cast<uint8 *>(src_data), width, height, pixel);
+        yancy::NV21ToRGB565(reinterpret_cast<uint8 *>(src_data), width, height, pixel);
     };
     return createBitmap(env, nv21Data, src_data, width, height, callback, RGB_565);
 }
@@ -143,7 +146,7 @@ jbyteArray i420ToNV21(JNIEnv *env, jclass clazz, jbyteArray i420Data, jint width
     jbyte *src_data = checkDataAndConvert(env, i420Data,
                                           static_cast<int>(height * 3.0 / 2.0 * width));
     auto callback = [=](uint8 *dst_data) -> int {
-        return I420ToNV21(reinterpret_cast<uint8 *>(src_data), width, height, dst_data);
+        return yancy::I420ToNV21(reinterpret_cast<uint8 *>(src_data), width, height, dst_data);
     };
     return createColorBytes(env, i420Data, src_data, width * height * 3 / 2, callback);
 }
@@ -152,7 +155,7 @@ jbyteArray i420ToRgba(JNIEnv *env, jclass clazz, jbyteArray i420Data, jint width
     jbyte *src_data = checkDataAndConvert(env, i420Data,
                                           static_cast<int>(height * 3.0 / 2.0 * width));
     auto callback = [=](uint8 *dst_data) -> int {
-        return I420ToRGBA(reinterpret_cast<uint8 *>(src_data), width, height, dst_data);
+        return yancy::I420ToRGBA(reinterpret_cast<uint8 *>(src_data), width, height, dst_data);
     };
     return createColorBytes(env, i420Data, src_data, width * height * 4, callback);
 }
@@ -161,7 +164,7 @@ jbyteArray i420ToRgb(JNIEnv *env, jclass clazz, jbyteArray i420Data, jint width,
     jbyte *src_data = checkDataAndConvert(env, i420Data,
                                           static_cast<int>(height * 3.0 / 2.0 * width));
     auto callback = [=](uint8 *dst_data) -> int {
-        return I420ToRGB565(reinterpret_cast<uint8 *>(src_data), width, height, dst_data);
+        return yancy::I420ToRGB565(reinterpret_cast<uint8 *>(src_data), width, height, dst_data);
     };
     return createColorBytes(env, i420Data, src_data, width * height * 2, callback);
 }
@@ -171,7 +174,7 @@ i420ToBitmap8888(JNIEnv *env, jclass clazz, jbyteArray i420Data, jint width, jin
     jbyte *src_data = checkDataAndConvert(env, i420Data,
                                           static_cast<int>(height * 3.0 / 2.0 * width));
     auto callback = [=](unsigned char *pixel) -> void {
-        I420ToRGBA(reinterpret_cast<uint8 *>(src_data), width, height, pixel);
+        yancy::I420ToRGBA(reinterpret_cast<uint8 *>(src_data), width, height, pixel);
     };
     return createBitmap(env, i420Data, src_data, width, height, callback);
 }
@@ -181,7 +184,7 @@ i420ToBitmap565(JNIEnv *env, jclass clazz, jbyteArray i420Data, jint width, jint
     jbyte *src_data = checkDataAndConvert(env, i420Data,
                                           static_cast<int>(height * 3.0 / 2.0 * width));
     auto callback = [=](unsigned char *pixel) -> void {
-        I420ToRGB565(reinterpret_cast<uint8 *>(src_data), width, height, pixel);
+        yancy::I420ToRGB565(reinterpret_cast<uint8 *>(src_data), width, height, pixel);
     };
     return createBitmap(env, i420Data, src_data, width, height, callback, RGB_565);
 }
@@ -189,8 +192,8 @@ i420ToBitmap565(JNIEnv *env, jclass clazz, jbyteArray i420Data, jint width, jint
 jbyteArray rgbaToNV21(JNIEnv *env, jclass clazz, jbyteArray rgbaData, jint width, jint height) {
     jbyte *src_data = checkDataAndConvert(env, rgbaData, width * height * 4);
     auto callback = [=](uint8 *dst_data) -> int {
-        return RGBAToNV21(reinterpret_cast<uint8 *>(src_data), (width + 1) / 2 * 2, height,
-                          dst_data);
+        return yancy::RGBAToNV21(reinterpret_cast<uint8 *>(src_data), (width + 1) / 2 * 2, height,
+                                 dst_data);
     };
     return createColorBytes(env, rgbaData, src_data,
                             width * height + ((width + 1) / 2) * ((height + 1) / 2) * 2, callback);
@@ -199,7 +202,7 @@ jbyteArray rgbaToNV21(JNIEnv *env, jclass clazz, jbyteArray rgbaData, jint width
 jbyteArray rgbaToI420(JNIEnv *env, jclass clazz, jbyteArray rgbaData, jint width, jint height) {
     jbyte *src_data = checkDataAndConvert(env, rgbaData, width * height * 4);
     auto callback = [=](uint8 *dst_data) -> int {
-        return RGBAToI420(reinterpret_cast<uint8 *>(src_data), width, height, dst_data);
+        return yancy::RGBAToI420(reinterpret_cast<uint8 *>(src_data), width, height, dst_data);
     };
     return createColorBytes(env, rgbaData, src_data, width * height * 3 / 2, callback);
 }
@@ -207,7 +210,7 @@ jbyteArray rgbaToI420(JNIEnv *env, jclass clazz, jbyteArray rgbaData, jint width
 jbyteArray rgbaToRgb(JNIEnv *env, jclass clazz, jbyteArray rgbaData, jint width, jint height) {
     jbyte *src_data = checkDataAndConvert(env, rgbaData, width * height * 4);
     auto callback = [=](uint8 *dst_data) -> int {
-        return RGBAToRGB565(reinterpret_cast<uint8 *>(src_data), width, height, dst_data);
+        return yancy::RGBAToRGB565(reinterpret_cast<uint8 *>(src_data), width, height, dst_data);
     };
     return createColorBytes(env, rgbaData, src_data, width * height * 2, callback);
 }
@@ -226,7 +229,7 @@ jobject
 rgbaToBitmap565(JNIEnv *env, jclass clazz, jbyteArray rgbaData, jint width, jint height) {
     jbyte *src_data = checkDataAndConvert(env, rgbaData, width * height * 4);
     auto callback = [=](unsigned char *pixel) -> void {
-        RGBAToRGB565(reinterpret_cast<uint8 *>(src_data), width, height, pixel);
+        yancy::RGBAToRGB565(reinterpret_cast<uint8 *>(src_data), width, height, pixel);
     };
     return createBitmap(env, rgbaData, src_data, width, height, callback, RGB_565);
 }
@@ -234,7 +237,7 @@ rgbaToBitmap565(JNIEnv *env, jclass clazz, jbyteArray rgbaData, jint width, jint
 jbyteArray rgbToNV21(JNIEnv *env, jclass clazz, jbyteArray rgbData, jint width, jint height) {
     jbyte *src_data = checkDataAndConvert(env, rgbData, width * height * 2);
     auto callback = [=](uint8 *dst_data) -> int {
-        return RGB565ToNV21(reinterpret_cast<uint8 *>(src_data), width, height, dst_data);
+        return yancy::RGB565ToNV21(reinterpret_cast<uint8 *>(src_data), width, height, dst_data);
     };
     return createColorBytes(env, rgbData, src_data, width * height * 3 / 2, callback);
 }
@@ -244,8 +247,8 @@ jbyteArray rgbToI420(JNIEnv *env, jclass clazz, jbyteArray rgbData, jint width, 
     logger::error("size = ", width * height * 2);
     jbyte *src_data = checkDataAndConvert(env, rgbData, width * height * 2);
     auto callback = [=](uint8 *dst_data) -> int {
-        return RGB565ToI420(reinterpret_cast<uint8 *>(src_data), (width + 1) / 2 * 2, height,
-                            dst_data);
+        return yancy::RGB565ToI420(reinterpret_cast<uint8 *>(src_data), (width + 1) / 2 * 2, height,
+                                   dst_data);
     };
     return createColorBytes(env, rgbData, src_data,
                             width * height + ((width + 1) / 2) * ((height + 1) / 2) * 2, callback);
@@ -254,7 +257,7 @@ jbyteArray rgbToI420(JNIEnv *env, jclass clazz, jbyteArray rgbData, jint width, 
 jbyteArray rgbToRgba(JNIEnv *env, jclass clazz, jbyteArray rgbData, jint width, jint height) {
     jbyte *src_data = checkDataAndConvert(env, rgbData, width * height * 2);
     auto callback = [=](uint8 *dst_data) -> int {
-        return RGB565ToRGBA(reinterpret_cast<uint8 *>(src_data), width, height, dst_data);
+        return yancy::RGB565ToRGBA(reinterpret_cast<uint8 *>(src_data), width, height, dst_data);
     };
     return createColorBytes(env, rgbData, src_data, width * height * 4, callback);
 }
@@ -263,7 +266,7 @@ jobject
 rgbToBitmap8888(JNIEnv *env, jclass clazz, jbyteArray rgbData, jint width, jint height) {
     jbyte *src_data = checkDataAndConvert(env, rgbData, width * height * 2);
     auto callback = [=](unsigned char *pixel) -> void {
-        RGB565ToRGBA(reinterpret_cast<uint8 *>(src_data), width, height, pixel);
+        yancy::RGB565ToRGBA(reinterpret_cast<uint8 *>(src_data), width, height, pixel);
     };
     return createBitmap(env, rgbData, src_data, width, height, callback);
 }
@@ -285,9 +288,9 @@ jbyteArray bitmapToNV21(JNIEnv *env, jclass clazz, jobject jbitmap) {
         *dataSize = width * height + ((width + 1) / 2) * ((height + 1) / 2) * 2;
         *target_data = new uint8[*dataSize];
         if (format == ARGB_8888) {
-            return RGBAToNV21(pixel, (width + 1) / 2 * 2, height, *target_data);
+            return yancy::RGBAToNV21(pixel, (width + 1) / 2 * 2, height, *target_data);
         } else if (format == RGB_565) {
-            return RGB565ToNV21(pixel, (width + 1) / 2 * 2, height, *target_data);
+            return yancy::RGB565ToNV21(pixel, (width + 1) / 2 * 2, height, *target_data);
         } else {
             return -1;
         }
@@ -302,7 +305,7 @@ jbyteArray bitmapToRgb(JNIEnv *env, jclass clazz, jobject jbitmap) {
         *dataSize = width * height * 2;
         *target_data = new uint8[*dataSize];
         if (format == ARGB_8888) {
-            return RGBAToRGB565(pixel, width, height, *target_data);
+            return yancy::RGBAToRGB565(pixel, width, height, *target_data);
         } else if (format == RGB_565) {
             memcpy(*target_data, pixel, sizeof(uint8) * width * height * 2);
             return 0;
@@ -326,7 +329,7 @@ jbyteArray bitmapToRgba(JNIEnv *env, jclass clazz, jobject jbitmap) {
             memcpy(*target_data, pixel, sizeof(uint8) * width * height * 4);
             return 0;
         } else if (format == RGB_565) {
-            return RGB565ToRGBA(pixel, width, height, *target_data);
+            return yancy::RGB565ToRGBA(pixel, width, height, *target_data);
         } else {
             return -1;
         }
@@ -362,9 +365,9 @@ jbyteArray bitmapToI420(JNIEnv *env, jclass clazz, jobject jbitmap) {
         *dataSize = width * height + ((width + 1) / 2) * ((height + 1) / 2) * 2;
         *target_data = new uint8[*dataSize];
         if (format == ARGB_8888) {
-            return RGBAToI420(pixel, (width + 1) / 2 * 2, height, *target_data);
+            return yancy::RGBAToI420(pixel, (width + 1) / 2 * 2, height, *target_data);
         } else if (format == RGB_565) {
-            return RGB565ToI420(pixel, (width + 1) / 2 * 2, height, *target_data);
+            return yancy::RGB565ToI420(pixel, (width + 1) / 2 * 2, height, *target_data);
         } else {
             return -1;
         }
@@ -432,7 +435,7 @@ multiMixDataToBitmap(JNIEnv *env, jclass clazz, jbyteArray byteArray, jint dataF
             dataSize = width * height + ((width + 1) / 2) * ((height + 1) / 2) * 2;
             break;
         case 3:
-            format = libyuv::FOURCC_RGBP; //todo 带确认
+            format = libyuv::FOURCC_RGBP;
             dataSize = width * height * 2;
             break;
         case 5:
@@ -479,7 +482,8 @@ multiMixDataToBitmap(JNIEnv *env, jclass clazz, jbyteArray byteArray, jint dataF
                 crop_y = height - right;
                 if (right > bmpHeight || bottom > bmpWidth
                     || crop_x > bmpWidth || crop_y > bmpHeight) {
-                    logger::error("rect width or height more than rotated image width or height, please check it.");
+                    logger::error(
+                            "rect width or height more than rotated image width or height, please check it.");
                     return nullptr;
                 }
             } else if (degree == 180) {
@@ -490,7 +494,8 @@ multiMixDataToBitmap(JNIEnv *env, jclass clazz, jbyteArray byteArray, jint dataF
                 crop_y = left;
                 if (right > bmpHeight || bottom > bmpWidth
                     || crop_x > bmpWidth || crop_y > bmpHeight) {
-                    logger::error("rect width or height more than rotated image width or height, please check it.");
+                    logger::error(
+                            "rect width or height more than rotated image width or height, please check it.");
                     return nullptr;
                 }
             }
@@ -503,7 +508,8 @@ multiMixDataToBitmap(JNIEnv *env, jclass clazz, jbyteArray byteArray, jint dataF
     }
 
     auto callback = [=](uint8 *pixels) {
-        uint8 *i420_data = new uint8[bmpWidth * bmpHeight + ((bmpWidth + 1) / 2) * ((bmpHeight + 1) / 2) * 2];
+        uint8 *i420_data = new uint8[bmpWidth * bmpHeight +
+                                     ((bmpWidth + 1) / 2) * ((bmpHeight + 1) / 2) * 2];
         libyuv::ConvertToI420(reinterpret_cast<unsigned char *>(src_data),
                               static_cast<size_t>(dataSize),
                               i420_data, bmpWidth,
@@ -518,15 +524,82 @@ multiMixDataToBitmap(JNIEnv *env, jclass clazz, jbyteArray byteArray, jint dataF
         );
 
         if (bitmapConfig == 3) {
-            I420ToRGB565(i420_data, bmpWidth, bmpHeight, pixels);
+            yancy::I420ToRGB565(i420_data, bmpWidth, bmpHeight, pixels);
         } else {
-            I420ToRGBA(i420_data, bmpWidth, bmpHeight, pixels);
+            yancy::I420ToRGBA(i420_data, bmpWidth, bmpHeight, pixels);
         }
     };
 
 
     return createBitmap(env, byteArray, src_data, bmpWidth, bmpHeight, callback,
                         bitmapConfig == 3 ? RGB_565 : ARGB_8888);
+}
+
+jbyteArray dataMirror(JNIEnv *env, jclass clazz, jbyteArray byteArray, jint width, jint height,
+                      jint dataFormat, jint targetFormat, jboolean isVerticalMirror) {
+    int dataSize, src_format, dst_format;
+    switch (dataFormat) {
+        case 1:
+            dataSize = width * height + ((width + 1) / 2) * ((height + 1) / 2) * 2;
+            src_format = libyuv::FOURCC_NV21;
+            break;
+        case 2:
+            dataSize = width * height + ((width + 1) / 2) * ((height + 1) / 2) * 2;
+            src_format = libyuv::FOURCC_I420;
+            break;
+        case 3:
+            dataSize = width * height * 2;
+            src_format = libyuv::FOURCC_RGBP;
+            break;
+        case 5:
+            dataSize = width * height * 4;
+            src_format = libyuv::FOURCC_ABGR;
+            break;
+        default:
+            logger::error("This format operation is not supported yet!");
+            return nullptr;
+    }
+    jbyte *src_data = checkDataAndConvert(env, byteArray, dataSize);
+    if (src_data == nullptr) { return nullptr; }
+
+    int dst_data_size;
+    switch (targetFormat) {
+        case 1:
+            dst_data_size = width * height + ((width + 1) / 2) * ((height + 1) / 2) * 2;
+            dst_format = libyuv::FOURCC_NV21;
+            break;
+        case 2:
+            dst_data_size = width * height + ((width + 1) / 2) * ((height + 1) / 2) * 2;
+            dst_format = libyuv::FOURCC_I420;
+            break;
+        case 3:
+            dst_data_size = width * height * 2;
+            dst_format = libyuv::FOURCC_RGBP;
+            break;
+        case 5:
+            dst_data_size = width * height * 4;
+            dst_format = libyuv::FOURCC_ABGR;
+            break;
+        default:
+            logger::error("Does not support generating data in this format.");
+            return nullptr;
+    }
+    uint8 *dst_data = new uint8[dst_data_size];
+
+    if (yancy::DataMirror(reinterpret_cast<const uint8 *>(src_data), width, height, &dst_data,
+                          src_format, dst_format,
+                          isVerticalMirror) != 0) {
+        env->ReleaseByteArrayElements(byteArray, src_data, 0);
+        delete[] dst_data;
+        return nullptr;
+    }
+    jbyteArray dstByteArray = env->NewByteArray(dst_data_size);
+    env->SetByteArrayRegion(dstByteArray, 0, dst_data_size,
+                            reinterpret_cast<const jbyte *>(dst_data));
+    env->ReleaseByteArrayElements(byteArray, src_data, 0);
+    delete[] dst_data;
+
+    return dstByteArray;
 }
 
 template<typename Func>

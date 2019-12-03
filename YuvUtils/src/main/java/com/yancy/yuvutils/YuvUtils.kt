@@ -96,6 +96,16 @@ object YuvUtils {
     ): Bitmap?
 
     /*****************************************************************************************/
+    /**
+     * @param data         原始数据
+     * @param dataFormat   数据格式，可参考 {@link ImageData # ImageFormat}
+     * @param width        原始数据的宽
+     * @param height       原始数据的高
+     * @param rect         裁剪矩形，可为 null
+     * @param bitmapConfig 生成的bitmap格式，目前仅支持 RGB_565 和 ARGB_8888
+     * @param priorityClip 是否优先支持裁剪操作，true 是。
+     *                     需要注意的是，是先裁剪在旋转和先旋转再裁剪是两种不同的操作
+     */
     external fun multiMixDataToBitmap(
         data: ByteArray,
         dataFormat: Int,
@@ -104,7 +114,7 @@ object YuvUtils {
         degree: Int,
         rect: Rect?,
         bitmapConfig: Int,
-        priorityClip:Boolean
+        priorityClip: Boolean
     ): Bitmap?
 
     fun multiMixDataToBitmap(imageData: ImageData): Bitmap? {
@@ -126,5 +136,15 @@ object YuvUtils {
             )
         }
     }
+
+    /*****************************************************************************************/
+    external fun dataMirror(
+        data: ByteArray,
+        width: Int,
+        height: Int,
+        dataFormat: Int,
+        targetFormat: Int,
+        isVerticalMirror: Boolean = false
+    ): ByteArray?
 
 }

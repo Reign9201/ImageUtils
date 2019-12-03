@@ -113,6 +113,11 @@ multiMixDataToBitmap(JNIEnv *env, jclass clazz, jbyteArray byteArray, jint dataF
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
 
+JNIEXPORT jbyteArray
+dataMirror(JNIEnv *env, jclass clazz, jbyteArray byteArray, jint width, jint height,
+           jint dataFormat, jint targetFormat, jboolean isVerticalMirror);
+///////////////////////////////////////////////////////////////////////////////////////////////
+
 jbyte *checkDataAndConvert(JNIEnv *env, jbyteArray yuv420Data, int dataSize);
 
 #ifdef __cplusplus

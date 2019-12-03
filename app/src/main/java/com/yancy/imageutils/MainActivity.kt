@@ -45,20 +45,40 @@ class MainActivity : AppCompatActivity() {
         val width = bitmap.width
         val height = bitmap.height
 
+        imageView.setImageBitmap(bitmap)
 
         LogUtils.e("width = $width, height = $height")
-        val bitmapToNV21 = YuvUtils.bitmapToI420(bitmap)
+        val bitmapToNV21 = YuvUtils.bitmapToNV21(bitmap)
+
+        val bitmapToRgb = YuvUtils.bitmapToRgb(bitmap)
+        val bitmapToI420 = YuvUtils.bitmapToI420(bitmap)
+
+      /*  YuvUtils.nv21ToBitmap8888(bitmapToNV21!!,width,height)?.apply {
+            imageView.setImageBitmap(this)
+        }
+*/
 
 
+        bitmapToI420?.apply {
+            val dataMirror = YuvUtils.dataMirror(this, width, height, 2, 1)
+            dataMirror?.apply {
+//                val bitmap8888 = YuvUtils.rgbaToBitmap8888(this, width, height)
+//                val bitmap8888 = YuvUtils.i420ToBitmap8888(this, width, height)
+                val bitmap8888 = YuvUtils.nv21ToBitmap8888(this, width, height)
+                bitmap8888?.apply {
+                    imageView.setImageBitmap(this)
+                }?:LogUtils.e("图片生成失败")
+            }?:LogUtils.e("镜像翻转失败")
+        }?:LogUtils.e("生成 NV21 格式数据失败")
 
 
 //        val bitmapToRgba = YuvUtils.bitmapToRgba(bitmap)
-        bitmapToNV21?.apply {
+        /*bitmapToRgb?.apply {
 
             val multiMixDataToBitmap = YuvUtils.multiMixDataToBitmap(
                 ImageData(
                     this,
-                    ImageFormat.I420,
+                    ImageFormat.RGB_565,
                     width,
                     height,
 //                    270,
@@ -71,7 +91,7 @@ class MainActivity : AppCompatActivity() {
                 imageView.setImageBitmap(this)
                 LogUtils.e("format --->${this.config}")
             } ?: LogUtils.e("~~~~~~~~~~~~~~~~~~~~~")
-        } ?: LogUtils.e("出故障了")
+        } ?: LogUtils.e("出故障了")*/
 
 
 //        nv21Convert(bitmap, width, height)

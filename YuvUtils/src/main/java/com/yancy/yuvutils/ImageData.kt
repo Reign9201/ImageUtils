@@ -20,6 +20,7 @@ data class ImageData(
     val priorityClip: Boolean = true
 )
 
+@Suppress("UNUSED")
 enum class ImageFormat(var format: Int) {
     NV21(1),
     I420(2),
