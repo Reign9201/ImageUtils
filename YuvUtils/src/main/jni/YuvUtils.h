@@ -11,7 +11,15 @@
 #include "logger.hpp"
 
 //using namespace libyuv;
-
+typedef struct ConvertData {
+    int dataSize;
+    libyuv::RotationMode rotateMode;
+    uint32 format;
+    int targetWidth;
+    int targetHeight;
+    int crop_x = 0;
+    int crop_y = 0;
+} ConvertData;
 
 
 #ifdef __cplusplus
@@ -116,9 +124,18 @@ multiMixDataToBitmap(JNIEnv *env, jclass clazz, jbyteArray byteArray, jint dataF
 JNIEXPORT jbyteArray
 dataMirror(JNIEnv *env, jclass clazz, jbyteArray byteArray, jint width, jint height,
            jint dataFormat, jint targetFormat, jboolean isVerticalMirror);
+
+JNIEXPORT jbyteArray
+dataScale(JNIEnv *env, jclass clazz, jbyteArray byteArray, jint width, jint height, jint dstWidth, jint dstHeight, jint dataFormat,
+          jint targetFormat, jint filterMode);
 ///////////////////////////////////////////////////////////////////////////////////////////////
 
 jbyte *checkDataAndConvert(JNIEnv *env, jbyteArray yuv420Data, int dataSize);
+
+int convertDataHandle(JNIEnv *env, jint dataFormat,
+                      jint width, jint height,
+                      jint degree, jobject rect, jboolean priorityClip,
+                      ConvertData *convertData);
 
 #ifdef __cplusplus
 }

@@ -2,6 +2,10 @@ package com.yancy.yuvutils
 
 import android.graphics.Bitmap
 import android.graphics.Rect
+import com.yancy.yuvutils.annotation.RotateDegree
+import com.yancy.yuvutils.annotation.SupportFilter
+import com.yancy.yuvutils.annotation.SupportFormat
+import com.yancy.yuvutils.entry.ImageData
 
 /**
  * 说明：
@@ -108,10 +112,10 @@ object YuvUtils {
      */
     external fun multiMixDataToBitmap(
         data: ByteArray,
-        dataFormat: Int,
+        @SupportFormat dataFormat: Int,
         width: Int,
         height: Int,
-        degree: Int,
+        @RotateDegree degree: Int,
         rect: Rect?,
         bitmapConfig: Int,
         priorityClip: Boolean
@@ -142,9 +146,31 @@ object YuvUtils {
         data: ByteArray,
         width: Int,
         height: Int,
-        dataFormat: Int,
-        targetFormat: Int,
+        @SupportFormat dataFormat: Int,
+        @SupportFormat targetFormat: Int,
         isVerticalMirror: Boolean = false
+    ): ByteArray?
+
+    /**
+     * @param data          图像原始数据
+     * @param width         图像原始宽
+     * @param height        图像原始高
+     * @param dstWidth      缩放后的宽
+     * @param dstHeight     缩放后的高
+     * @param dataFormat    源图像格式
+     * @param targetFormat  缩放后的图像格式
+     * @param filterMode    过滤模式
+     * @return              缩放后的图像数据
+     */
+    external fun dataScale(
+        data: ByteArray,
+        width: Int,
+        height: Int,
+        dstWidth: Int,
+        dstHeight: Int,
+        @SupportFormat dataFormat: Int,
+        @SupportFormat targetFormat: Int,
+        @SupportFilter filterMode: Int = 0
     ): ByteArray?
 
 }

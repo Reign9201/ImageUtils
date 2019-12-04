@@ -4,13 +4,10 @@ import android.Manifest
 import android.graphics.*
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import com.yancy.imageutils.test.Test
-import com.yancy.yuvutils.ImageData
-import com.yancy.yuvutils.ImageFormat
+import com.yancy.yuvutils.entry.ImageData
+import com.yancy.yuvutils.entry.ImageFormat
 import com.yancy.yuvutils.YuvUtils
 import kotlinx.android.synthetic.main.activity_main.*
-import java.nio.ByteBuffer
-import java.util.*
 
 class MainActivity : AppCompatActivity() {
 
@@ -45,7 +42,7 @@ class MainActivity : AppCompatActivity() {
         val width = bitmap.width
         val height = bitmap.height
 
-        imageView.setImageBitmap(bitmap)
+        //imageView.setImageBitmap(bitmap)
 
         LogUtils.e("width = $width, height = $height")
         val bitmapToNV21 = YuvUtils.bitmapToNV21(bitmap)
@@ -53,13 +50,18 @@ class MainActivity : AppCompatActivity() {
         val bitmapToRgb = YuvUtils.bitmapToRgb(bitmap)
         val bitmapToI420 = YuvUtils.bitmapToI420(bitmap)
 
-      /*  YuvUtils.nv21ToBitmap8888(bitmapToNV21!!,width,height)?.apply {
-            imageView.setImageBitmap(this)
-        }
-*/
+
+        
 
 
-        bitmapToI420?.apply {
+
+        /*  YuvUtils.nv21ToBitmap8888(bitmapToNV21!!,width,height)?.apply {
+              imageView.setImageBitmap(this)
+          }
+  */
+
+
+        /*bitmapToI420?.apply {
             val dataMirror = YuvUtils.dataMirror(this, width, height, 2, 1)
             dataMirror?.apply {
 //                val bitmap8888 = YuvUtils.rgbaToBitmap8888(this, width, height)
@@ -69,7 +71,7 @@ class MainActivity : AppCompatActivity() {
                     imageView.setImageBitmap(this)
                 }?:LogUtils.e("图片生成失败")
             }?:LogUtils.e("镜像翻转失败")
-        }?:LogUtils.e("生成 NV21 格式数据失败")
+        }?:LogUtils.e("生成 NV21 格式数据失败")*/
 
 
 //        val bitmapToRgba = YuvUtils.bitmapToRgba(bitmap)
@@ -80,11 +82,10 @@ class MainActivity : AppCompatActivity() {
                     this,
                     ImageFormat.RGB_565,
                     width,
-                    height,
-//                    270,
-//                    rect = Rect(0, 0, 300 + 116, 300),
+                    height, 0,
+//                    rect = Rect(0, 0, 150, 150),
 //                    rect = Rect(0, 116, 300, 300+116),
-                    priorityClip = true
+                    priorityClip = false
                 )
             )
             multiMixDataToBitmap?.apply {
