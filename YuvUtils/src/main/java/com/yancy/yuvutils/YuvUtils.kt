@@ -5,102 +5,103 @@ import android.graphics.Rect
 import com.yancy.yuvutils.annotation.RotateDegree
 import com.yancy.yuvutils.annotation.SupportFilter
 import com.yancy.yuvutils.annotation.SupportFormat
-import com.yancy.yuvutils.entry.ImageData
 
 /**
- * 说明：
+ * 说明：基于libyuv库做的Android中常用的图像数据格式转换
  *
  * @author Yancy
  * @date 2019/11/13
  */
-//@Suppress("UNUSED")
+@Suppress("UNUSED")
 object YuvUtils {
     init {
         System.loadLibrary("YuvUtils")
     }
 
     /**
-     * NV21转换成RGBA  对应 Android 中的 ARGB_8888
-     * @param  nv21Data nv21数据
-     * @param width 图像的宽
-     * @param height 图像的高
+     * bitmap 转换成其他图像格式数据
      *
-     * @return 返回 RGBA 数据，可能为 null
+     * @param bitmap 仅支持 RGB_565 和 RGBA_8888 两种类型的位图转换
+     * @return 转换后的数据，转换格式异常会导致转换识别，返回为 null
      */
-    external fun nv21ToRgba(nv21Data: ByteArray, width: Int, height: Int): ByteArray?
-
-    external fun nv21ToRgb(nv21Data: ByteArray, width: Int, height: Int): ByteArray?
-
-    external fun nv21ToI420(nv21Data: ByteArray, width: Int, height: Int): ByteArray?
-
-    external fun nv21ToBitmap8888(nv21Data: ByteArray, width: Int, height: Int): Bitmap?
-
-    external fun nv21ToBitmap565(nv21Data: ByteArray, width: Int, height: Int): Bitmap?
-
-    /*****************************************************************************************/
-
-    external fun i420ToNV21(i420Data: ByteArray, width: Int, height: Int): ByteArray?
-
-    external fun i420ToRgba(i420Data: ByteArray, width: Int, height: Int): ByteArray?
-
-    external fun i420ToRgb(i420Data: ByteArray, width: Int, height: Int): ByteArray?
-
-    external fun i420ToBitmap8888(i420Data: ByteArray, width: Int, height: Int): Bitmap?
-
-    external fun i420ToBitmap565(i420Data: ByteArray, width: Int, height: Int): Bitmap?
-
-
-    /*****************************************************************************************/
-
-    external fun rgbaToNV21(rgbaData: ByteArray, width: Int, height: Int): ByteArray?
-
-    external fun rgbaToI420(rgbaData: ByteArray, width: Int, height: Int): ByteArray?
-
-    external fun rgbaToRgb(rgbaData: ByteArray, width: Int, height: Int): ByteArray?
-
-    external fun rgbaToBitmap8888(rgbaData: ByteArray, width: Int, height: Int): Bitmap?
-
-    external fun rgbaToBitmap565(rgbaData: ByteArray, width: Int, height: Int): Bitmap?
-
-    /*****************************************************************************************/
-
-
-    external fun rgbToNV21(rgbData: ByteArray, width: Int, height: Int): ByteArray?
-
-    external fun rgbToI420(rgbData: ByteArray, width: Int, height: Int): ByteArray?
-
-    external fun rgbToRgba(rgbData: ByteArray, width: Int, height: Int): ByteArray?
-
-    external fun rgbToBitmap8888(rgbData: ByteArray, width: Int, height: Int): Bitmap?
-
-    external fun rgbToBitmap565(rgbData: ByteArray, width: Int, height: Int): Bitmap?
-
-
-    /*****************************************************************************************/
-
     external fun bitmapToNV21(bitmap: Bitmap?): ByteArray?
-
-    external fun bitmapToRgb(bitmap: Bitmap?): ByteArray?
+    external fun bitmapToRgb565(bitmap: Bitmap?): ByteArray?
+    external fun bitmapToRgb24(bitmap: Bitmap?): ByteArray?
     external fun bitmapToRgba(bitmap: Bitmap?): ByteArray?
-    external fun bitmap2Rgba(bitmap: Bitmap?): IntArray?
     external fun bitmapToI420(bitmap: Bitmap?): ByteArray?
 
-    /*****************************************************************************************/
-    external fun intToByte(intArray: IntArray): ByteArray?
 
-    external fun byteToInt(byteArray: ByteArray): IntArray?
+    /**
+     * int数组类型数据与byte数组类型数据互转操作
+     */
+    external fun intArrayToByteArray(intArray: IntArray): ByteArray?
+    external fun byteArrayToIntArray(byteArray: ByteArray): IntArray?
 
-    /*****************************************************************************************/
-    external fun nv21ToRectBitmap(
-        nv21Data: ByteArray,
+
+    /**
+     * 图像格式互相转换，支持的格式详见 ImageFormat 枚举类
+     *
+     * @param data          图像源数据
+     * @param width         图像的宽
+     * @param height        图像的高
+     * @param dataFormat    源图像格式
+     * @param targetFormat  目标图像格式
+     *
+     * @return 返回转换格式后的图像数据
+     */
+    external fun imageFormatConvert(
+        data: ByteArray,
         width: Int,
         height: Int,
-        degree: Int,
-        rect: Rect
-    ): Bitmap?
+        @SupportFormat dataFormat: Int,
+        @SupportFormat targetFormat: Int
+    ): ByteArray?
 
-    /*****************************************************************************************/
     /**
+     * 图像格式互相转换
+     *
+     * @param data          图像源数据
+     * @param width         图像的宽
+     * @param height        图像的高
+     * @param dataFormat    源图像格式，源格式详见 ImageFormat 枚举类
+     * @param bitmapConfig  目标位图格式，仅支持 RGB565 和 ARGB_8888 两种格式
+     *
+     * @return 返回转换格式后的位图 Bitmap
+     */
+    external fun imageToBitmap(
+        data: ByteArray,
+        width: Int,
+        height: Int,
+        @SupportFormat dataFormat: Int,
+        bitmapConfig: Int
+    ):Bitmap?
+
+    /**
+     * 各种类型的图像数据裁剪和旋转操作
+     *
+     * @param data         原始数据
+     * @param dataFormat   数据格式，可参考 {@link ImageData # ImageFormat}
+     * @param width        原始数据的宽
+     * @param height       原始数据的高
+     * @param rect         裁剪矩形，可为 null
+     * @param targetFormat 生成的图像格式，可参考 {@link ImageData # ImageFormat}
+     * @param priorityClip 是否优先支持裁剪操作，true 是。
+     *                     需要注意的是，是先裁剪在旋转和先旋转再裁剪是两种不同的操作
+     */
+    external fun dataClipRotate(
+        data: ByteArray,
+        @SupportFormat dataFormat: Int,
+        width: Int,
+        height: Int,
+        @RotateDegree degree: Int,
+        rect: Rect?,
+        targetFormat: Int,
+        priorityClip: Boolean
+    ): ByteArray?
+
+    /**
+     * 各种类型的图像数据裁剪和旋转后生成位图操作
+     *
      * @param data         原始数据
      * @param dataFormat   数据格式，可参考 {@link ImageData # ImageFormat}
      * @param width        原始数据的宽
@@ -110,7 +111,7 @@ object YuvUtils {
      * @param priorityClip 是否优先支持裁剪操作，true 是。
      *                     需要注意的是，是先裁剪在旋转和先旋转再裁剪是两种不同的操作
      */
-    external fun multiMixDataToBitmap(
+    external fun dataClipRotateToBitmap(
         data: ByteArray,
         @SupportFormat dataFormat: Int,
         width: Int,
@@ -121,27 +122,19 @@ object YuvUtils {
         priorityClip: Boolean
     ): Bitmap?
 
-    fun multiMixDataToBitmap(imageData: ImageData): Bitmap? {
-        imageData.run {
-            val config = when (bitmapConfig) {
-                Bitmap.Config.RGB_565 -> 3
-                Bitmap.Config.ARGB_8888 -> 5
-                else -> throw IllegalStateException("This format is not supported yet.")
-            }
-            return multiMixDataToBitmap(
-                data,
-                dataFormat.format,
-                width,
-                height,
-                degree,
-                rect,
-                config,
-                priorityClip
-            )
-        }
-    }
-
-    /*****************************************************************************************/
+    /**
+     * 图像数据镜像翻转操作
+     *
+     * @param data              图像原始数据
+     * @param width             图像原始宽
+     * @param height            图像原始高
+     * @param dataFormat        源图像格式
+     * @param targetFormat      缩放后的图像格式
+     * @param isVerticalMirror  是否执行垂直镜像操作，默认false，即水平翻转，
+     *                          若为true，即对图像进行了 180 旋转，而并非真正的垂直镜像
+     *
+     * @return 镜像翻转后的数据
+     */
     external fun dataMirror(
         data: ByteArray,
         width: Int,
@@ -152,6 +145,8 @@ object YuvUtils {
     ): ByteArray?
 
     /**
+     * 图像缩放操作
+     *
      * @param data          图像原始数据
      * @param width         图像原始宽
      * @param height        图像原始高

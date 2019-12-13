@@ -1,6 +1,7 @@
 //
 // Created by XuYanjun on 2019/11/20.
 //
+#include <string.h>
 #include "../head/ColorConvert.hpp"
 #include "../logger.hpp"
 
@@ -27,12 +28,6 @@ int yancy::NV21ToRGB565(const uint8 *src_nv21_data, int width, int height, uint8
                                 width, height);
 }
 
-int yancy::NV21Rotate(const uint8 *src_nv21_data, int width, int height, uint8 *dst_nv21_rotate) {
-
-    //libyuv::RotateUV90()
-
-    return 0;
-}
 
 int yancy::NV21ToI420(const uint8 *src_nv21_data, int width, int height, uint8 *dst_i420) {
     return libyuv::NV21ToI420(src_nv21_data, width,
@@ -41,8 +36,27 @@ int yancy::NV21ToI420(const uint8 *src_nv21_data, int width, int height, uint8 *
                               dst_i420 + width * height, width >> 1,
                               dst_i420 + width * height + (width >> 1) * (height >> 1), width >> 1,
                               width, height);
-    // return 0;
 }
+
+int yancy::NV21ToRGB24(const uint8 *src_nv21_data, int width, int height, uint8 *dst_rgb24) {
+    uint8 *i420_data = new uint8[width * height + ((width + 1) / 2) * ((height + 1) / 2) * 2];
+    if (NV21ToI420(src_nv21_data, width, height, i420_data) != 0) {
+        delete[] i420_data;
+        return -1;
+    }
+    int resCode = I420ToRGB24(i420_data, width, height, dst_rgb24);
+    delete[] i420_data;
+
+    return resCode;
+}
+
+int yancy::I420ToRGB24(const uint8 *src_i420_data, int width, int height, uint8 *dst_rgb24) {
+    return libyuv::I420ToRGB24(src_i420_data, width,
+                               src_i420_data + width * height, width >> 1,
+                               src_i420_data + width * height + (width >> 1) * (height >> 1), width >> 1,
+                               dst_rgb24, width * 3, width, height);
+}
+
 
 int yancy::I420ToRGBA(const uint8 *src_i420_data, int width, int height, uint8 *dst_rgba_data) {
     return libyuv::I420ToABGR(src_i420_data, width,
@@ -126,6 +140,61 @@ int yancy::RGBAToRGB565(const uint8 *src_rgba_data, int width, int height, uint8
 
 }
 
+int yancy::RGBAToRGB24(const uint8 *src_rgba_data, int width, int height, uint8 *dst_rgb24_data) {
+    uint8 *argb = new uint8[width * height * 4];
+    if (libyuv::ABGRToARGB(src_rgba_data, width * 4,
+                           argb, width * 4,
+                           width, height) != 0) {
+        delete[] argb;
+        return -1;
+    }
+    int resCode = libyuv::ARGBToRGB24(argb, width * 4, dst_rgb24_data, width * 3, width, height);
+    delete[] argb;
+    return resCode;
+}
+
+int yancy::RGB24ToNV21(const uint8 *src_rgb24_data, int width, int height, uint8 *dst_nv21_data) {
+    uint8 *i420_data = new uint8[width * height + ((width + 1) / 2) * ((height + 1) / 2) * 2];
+    if (RGB24ToI420(src_rgb24_data, width, height, i420_data)) {
+        delete[] i420_data;
+        return -1;
+    }
+    int resCode = I420ToNV21(i420_data, width, height, dst_nv21_data);
+    delete[] i420_data;
+    return resCode;
+}
+
+int yancy::RGB24ToI420(const uint8 *src_rgb24_data, int width, int height, uint8 *dst_i420_data) {
+    return libyuv::RGB24ToI420(src_rgb24_data, width * 3,
+                               dst_i420_data, width,
+                               dst_i420_data + width * height, width >> 1,
+                               dst_i420_data + width * height + (width >> 1) * (height >> 1),
+                               width >> 1,
+                               width, height);
+}
+
+int yancy::RGB24ToRGB565(const uint8 *src_rgb24_data, int width, int height, uint8 *dst_rgb_data) {
+    uint8 *i420_data = new uint8[width * height + ((width + 1) / 2) * ((height + 1) / 2) * 2];
+    if (RGB24ToI420(src_rgb24_data, width, height, i420_data)) {
+        delete[] i420_data;
+        return -1;
+    }
+    int resCode = I420ToRGB565(i420_data, width, height, dst_rgb_data);
+    delete[] i420_data;
+    return resCode;
+}
+
+int yancy::RGB24ToRGBA(const uint8 *src_rgb24_data, int width, int height, uint8 *dst_rgba_data) {
+    uint8 *argb_data = new uint8[width * height * 4];
+    if (libyuv::RGB24ToARGB(src_rgb24_data, width * 3, argb_data, width * 4, width, height) != 0) {
+        delete[] argb_data;
+        return -1;
+    }
+    int resCode = libyuv::ARGBToABGR(argb_data, width * 4, dst_rgba_data, width * 4, width, height);
+    delete[] argb_data;
+    return resCode;
+}
+
 int yancy::RGB565ToNV21(const uint8 *src_rgb_data, int width, int height, uint8 *dst_nv21_data) {
 
     if (libyuv::RGB565ToI420(src_rgb_data, width * 2,
@@ -155,9 +224,19 @@ int yancy::RGB565ToRGBA(const uint8 *src_rgb_data, int width, int height, uint8 
     return libyuv::ARGBToABGR(dst_rgba_data, width * 4, dst_rgba_data, width * 4, width, height);
 }
 
-int
-yancy::DataMirror(const uint8 *src_data, int width, int height, uint8 **dst_data, int src_fourcc,
-                  int dst_fourcc, bool vertical_mirror) {
+int yancy::RGB565ToRGB24(const uint8 *src_rgb_data, int width, int height, uint8 *dst_rgb24_data) {
+    uint8 *argb_data = new uint8[width * height * 4];
+    if (libyuv::RGB565ToARGB(src_rgb_data, width * 2, argb_data, width * 4, width, height) != 0) {
+        delete[] argb_data;
+        return -1;
+    }
+    int resCode = libyuv::ARGBToRGB24(argb_data, width * 4, dst_rgb24_data, width * 3, width, height);
+    delete[] argb_data;
+    return resCode;
+}
+
+int yancy::DataMirror(const uint8 *src_data, int width, int height, uint8 **dst_data, int src_fourcc,
+                      int dst_fourcc, bool vertical_mirror) {
 
     int resCode = -1;
 
@@ -496,6 +575,9 @@ int yancy::DataConvert(uint8 *src_data, int src_width, int src_height, int src_d
         case RGB565:
             resCode = I420ToRGB565(i420_data, dst_width, dst_height, dst_data);
             break;
+        case RGB24:
+            resCode = I420ToRGB24(i420_data, dst_width, dst_height, dst_data);
+            break;
         case ARGB_8888:
             resCode = I420ToRGBA(i420_data, dst_width, dst_height, dst_data);
             break;
@@ -505,6 +587,7 @@ int yancy::DataConvert(uint8 *src_data, int src_width, int src_height, int src_d
     }
     delete[] i420_data;
     return resCode;
+
 }
 
 int
@@ -528,6 +611,11 @@ yancy::DataScale(const uint8 *src_data, int src_width, int src_height, uint8 **d
                                          dst_data, dst_width, dst_height,
                                          filterMode,
                                          NV21ToI420, I420ToRGBA);
+                case RGB24:
+                    return __DataScale__(src_data, src_width, src_height,
+                                         dst_data, dst_width, dst_height,
+                                         filterMode,
+                                         NV21ToI420, I420ToRGB24);
                 case ARGB_8888:
                     return __DataScale__(src_data, src_width, src_height,
                                          dst_data, dst_width, dst_height,
@@ -553,6 +641,11 @@ yancy::DataScale(const uint8 *src_data, int src_width, int src_height, uint8 **d
                                          dst_data, dst_width, dst_height,
                                          filterMode,
                                          nullptr, I420ToRGBA);
+                case RGB24:
+                    return __DataScale__(src_data, src_width, src_height,
+                                         dst_data, dst_width, dst_height,
+                                         filterMode,
+                                         nullptr, I420ToRGB24);
                 case ARGB_8888:
                     return __DataScale__(src_data, src_width, src_height,
                                          dst_data, dst_width, dst_height,
@@ -578,11 +671,46 @@ yancy::DataScale(const uint8 *src_data, int src_width, int src_height, uint8 **d
                                          dst_data, dst_width, dst_height,
                                          filterMode,
                                          RGB565ToI420, I420ToRGBA);
+                case RGB24:
+                    return __DataScale__(src_data, src_width, src_height,
+                                         dst_data, dst_width, dst_height,
+                                         filterMode,
+                                         RGB565ToI420, I420ToRGB24);
                 case ARGB_8888:
                     return __DataScale__(src_data, src_width, src_height,
                                          dst_data, dst_width, dst_height,
                                          filterMode,
                                          RGB565ToI420, I420ToRGB565);
+                default:
+                    return -1;
+            }
+        case RGB24:
+            switch (getFormat(dst_format)) {
+                case NV21:
+                    return __DataScale__(src_data, src_width, src_height,
+                                         dst_data, dst_width, dst_height,
+                                         filterMode,
+                                         RGB24ToI420, I420ToNV21);
+                case I420:
+                    return __DataScale__(src_data, src_width, src_height,
+                                         dst_data, dst_width, dst_height,
+                                         filterMode,
+                                         RGB24ToI420, nullptr);
+                case RGB565:
+                    return __DataScale__(src_data, src_width, src_height,
+                                         dst_data, dst_width, dst_height,
+                                         filterMode,
+                                         RGB24ToI420, I420ToRGBA);
+                case RGB24:
+                    return __DataScale__(src_data, src_width, src_height,
+                                         dst_data, dst_width, dst_height,
+                                         filterMode,
+                                         RGB24ToI420, I420ToRGB24);
+                case ARGB_8888:
+                    return __DataScale__(src_data, src_width, src_height,
+                                         dst_data, dst_width, dst_height,
+                                         filterMode,
+                                         RGB24ToI420, I420ToRGB565);
                 default:
                     return -1;
             }
@@ -603,6 +731,11 @@ yancy::DataScale(const uint8 *src_data, int src_width, int src_height, uint8 **d
                                          dst_data, dst_width, dst_height,
                                          filterMode,
                                          RGBAToI420, I420ToRGBA);
+                case RGB24:
+                    return __DataScale__(src_data, src_width, src_height,
+                                         dst_data, dst_width, dst_height,
+                                         filterMode,
+                                         RGBAToI420, I420ToRGB24);
                 case ARGB_8888:
                     return __DataScale__(src_data, src_width, src_height,
                                          dst_data, dst_width, dst_height,
@@ -702,3 +835,27 @@ libyuv::FilterMode yancy::getFilterMode(int filterMode) {
             return libyuv::kFilterNone;
     }
 }
+
+int yancy::getDataSize(int width, int height, int dataFormat) {
+    switch (dataFormat) {
+        case 1:
+        case 2:
+            return width * height + ((width + 1) / 2) * ((height + 1) / 2) * 2;
+        case 3:
+            return width * height * 2;
+        case 4:
+            return width * height * 3;
+        case 5:
+            return width * height * 4;
+        default:
+            return 0;
+    }
+}
+
+
+
+
+
+
+
+

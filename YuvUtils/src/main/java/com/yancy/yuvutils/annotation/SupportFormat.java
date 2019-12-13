@@ -11,7 +11,7 @@ import java.lang.annotation.RetentionPolicy;
  * @author Yancy
  * @date 2019/12/4
  */
-@IntDef({1, 2, 3, 5})
+@IntDef({1, 2, 3, 4, 5})
 @Retention(RetentionPolicy.SOURCE)
 public @interface SupportFormat {
 }

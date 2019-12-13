@@ -2,11 +2,12 @@ package com.yancy.imageutils
 
 import android.Manifest
 import android.graphics.*
+import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import com.yancy.yuvutils.entry.ImageData
 import com.yancy.yuvutils.entry.ImageFormat
-import com.yancy.yuvutils.YuvUtils
+import com.yancy.yuvutils.ImageUtils
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
@@ -29,11 +30,12 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         PermissionUtil.addPermission(
             this,
-            android.Manifest.permission.WRITE_EXTERNAL_STORAGE,
-            Manifest.permission.CAMERA
-
+            Manifest.permission.WRITE_EXTERNAL_STORAGE,
+            Manifest.permission.CAMERA,
+            Manifest.permission.READ_PHONE_STATE
         )
             .request(this)
+
 
         LogUtils.e("========================== value = ${Bitmap.Config.valueOf(Bitmap.Config.ARGB_8888.name)}")
 
@@ -45,28 +47,28 @@ class MainActivity : AppCompatActivity() {
         //imageView.setImageBitmap(bitmap)
 
         LogUtils.e("width = $width, height = $height")
-        val bitmapToNV21 = YuvUtils.bitmapToNV21(bitmap)
+        val bitmapToNV21 = ImageUtils.bitmapToNV21(bitmap)
 
-        val bitmapToRgb = YuvUtils.bitmapToRgb(bitmap)
-        val bitmapToI420 = YuvUtils.bitmapToI420(bitmap)
-
-
-        
+        val bitmapToRgb = ImageUtils.bitmapToRgb565(bitmap)
+        val bitmapToI420 = ImageUtils.bitmapToI420(bitmap)
 
 
 
-        /*  YuvUtils.nv21ToBitmap8888(bitmapToNV21!!,width,height)?.apply {
+
+
+
+        /*  ImageUtils.nv21ToBitmap8888(bitmapToNV21!!,width,height)?.apply {
               imageView.setImageBitmap(this)
           }
   */
 
 
         /*bitmapToI420?.apply {
-            val dataMirror = YuvUtils.dataMirror(this, width, height, 2, 1)
+            val dataMirror = ImageUtils.dataMirror(this, width, height, 2, 1)
             dataMirror?.apply {
-//                val bitmap8888 = YuvUtils.rgbaToBitmap8888(this, width, height)
-//                val bitmap8888 = YuvUtils.i420ToBitmap8888(this, width, height)
-                val bitmap8888 = YuvUtils.nv21ToBitmap8888(this, width, height)
+//                val bitmap8888 = ImageUtils.rgbaToBitmap8888(this, width, height)
+//                val bitmap8888 = ImageUtils.i420ToBitmap8888(this, width, height)
+                val bitmap8888 = ImageUtils.nv21ToBitmap8888(this, width, height)
                 bitmap8888?.apply {
                     imageView.setImageBitmap(this)
                 }?:LogUtils.e("图片生成失败")
@@ -74,10 +76,10 @@ class MainActivity : AppCompatActivity() {
         }?:LogUtils.e("生成 NV21 格式数据失败")*/
 
 
-//        val bitmapToRgba = YuvUtils.bitmapToRgba(bitmap)
+//        val bitmapToRgba = ImageUtils.bitmapToRgba(bitmap)
         /*bitmapToRgb?.apply {
 
-            val multiMixDataToBitmap = YuvUtils.multiMixDataToBitmap(
+            val multiMixDataToBitmap = ImageUtils.multiMixDataToBitmap(
                 ImageData(
                     this,
                     ImageFormat.RGB_565,
@@ -88,7 +90,7 @@ class MainActivity : AppCompatActivity() {
                     priorityClip = false
                 )
             )
-            multiMixDataToBitmap?.apply {
+            dataClipRotateToBitmap?.apply {
                 imageView.setImageBitmap(this)
                 LogUtils.e("format --->${this.config}")
             } ?: LogUtils.e("~~~~~~~~~~~~~~~~~~~~~")
@@ -105,7 +107,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun rgbConvert(bitmap: Bitmap, width: Int, height: Int) {
         LogUtils.e("config = ${bitmap.config}")
-        val bitmapToRgb = YuvUtils.bitmapToRgb(bitmap)
+        val bitmapToRgb = ImageUtils.bitmapToRgb565(bitmap)
         if (bitmapToRgb == null) {
             LogUtils.e("Bitmap 转 RGB 失败")
             return
@@ -114,7 +116,7 @@ class MainActivity : AppCompatActivity() {
 
         LogUtils.e("bitmapToRgb.size = ${bitmapToRgb.size}")
         /**************************************************************************************/
-        val rgbToBitmap8888 = YuvUtils.rgbToBitmap8888(bitmapToRgb, width, height)
+        val rgbToBitmap8888 = ImageUtils.rgb565ToBitmap8888(bitmapToRgb, width, height)
         if (rgbToBitmap8888 == null) {
             LogUtils.e("RGB 转 Bitmap8888 失败")
             return
@@ -123,7 +125,7 @@ class MainActivity : AppCompatActivity() {
         //imageView.setImageBitmap(rgbToBitmap8888)
 
         /**************************************************************************************/
-        val rgbToBitmap565 = YuvUtils.rgbToBitmap565(bitmapToRgb, width, height)
+        val rgbToBitmap565 = ImageUtils.rgb565ToBitmap565(bitmapToRgb, width, height)
         if (rgbToBitmap565 == null) {
             LogUtils.e("RGBA 转 Bitmap565 失败")
             return
@@ -133,14 +135,14 @@ class MainActivity : AppCompatActivity() {
 
         /**************************************************************************************/
 
-        val rgbToNV21 = YuvUtils.rgbToNV21(bitmapToRgb, width, height)
+        val rgbToNV21 = ImageUtils.rgb565ToNV21(bitmapToRgb, width, height)
         if (rgbToNV21 == null) {
             LogUtils.e("RGBA 转 NV21失败")
             return
         }
 
         /**************************************************************************************/
-        val nv21ToBitmap8888 = YuvUtils.nv21ToBitmap8888(rgbToNV21, width, height)
+        val nv21ToBitmap8888 = ImageUtils.nv21ToBitmap8888(rgbToNV21, width, height)
         if (nv21ToBitmap8888 == null) {
             LogUtils.e("NV21 转 Bitmap8888 失败")
             return
@@ -149,7 +151,7 @@ class MainActivity : AppCompatActivity() {
         // imageView.setImageBitmap(nv21ToBitmap8888)
 
         /**************************************************************************************/
-        val nv21ToBitmap565 = YuvUtils.nv21ToBitmap565(rgbToNV21, width, height)
+        val nv21ToBitmap565 = ImageUtils.nv21ToBitmap565(rgbToNV21, width, height)
         if (nv21ToBitmap565 == null) {
             LogUtils.e("NV21 转 Bitmap565 失败")
             return
@@ -158,12 +160,12 @@ class MainActivity : AppCompatActivity() {
         // imageView.setImageBitmap(nv21ToBitmap565)
 
 
-        val bitmap565ToI420 = YuvUtils.bitmapToI420(nv21ToBitmap565)
+        val bitmap565ToI420 = ImageUtils.bitmapToI420(nv21ToBitmap565)
 
 
         /****************************************************************************************/
         // TODO 转换有问题
-        val rgbToI420 = YuvUtils.rgbToI420(bitmapToRgb, width, height)
+        val rgbToI420 = ImageUtils.rgb565ToI420(bitmapToRgb, width, height)
         if (rgbToI420 == null) {
             LogUtils.e("RGB 转 I420 失败")
             return
@@ -171,7 +173,7 @@ class MainActivity : AppCompatActivity() {
 
 
         /**************************************************************************************/
-        val i420ToBitmap8888 = YuvUtils.i420ToBitmap8888(rgbToI420, width, height)
+        val i420ToBitmap8888 = ImageUtils.i420ToBitmap8888(rgbToI420, width, height)
         if (i420ToBitmap8888 == null) {
             LogUtils.e("I420 转 Bitmap8888 失败")
             return
@@ -180,7 +182,7 @@ class MainActivity : AppCompatActivity() {
         imageView.setImageBitmap(i420ToBitmap8888)
 
         /**************************************************************************************/
-        val i420ToBitmap565 = YuvUtils.i420ToBitmap565(rgbToI420, width, height)
+        val i420ToBitmap565 = ImageUtils.i420ToBitmap565(rgbToI420, width, height)
         if (i420ToBitmap565 == null) {
             LogUtils.e("I420 转 Bitmap565 失败")
             return
@@ -190,7 +192,7 @@ class MainActivity : AppCompatActivity() {
         //imageView.setImageBitmap(i420ToBitmap565)
 
         /****************************************************************************************/
-        val rgbToRgba = YuvUtils.rgbToRgba(bitmapToRgb, width, height)
+        val rgbToRgba = ImageUtils.rgb565ToRgba(bitmapToRgb, width, height)
         if (rgbToRgba == null) {
             LogUtils.e("RGB 转 RGBA 失败")
             return
@@ -198,7 +200,7 @@ class MainActivity : AppCompatActivity() {
         //LogUtils.e("==================${rgbToRgba.size}")
 
         /****************************************************************************************/
-        val rgbaToBitmap8888 = YuvUtils.rgbaToBitmap8888(rgbToRgba, width, height)
+        val rgbaToBitmap8888 = ImageUtils.rgbaToBitmap8888(rgbToRgba, width, height)
         if (rgbaToBitmap8888 == null) {
             LogUtils.e("RGBA 转 Bitmap8888 失败")
             return
@@ -208,7 +210,7 @@ class MainActivity : AppCompatActivity() {
         //imageView.setImageBitmap(rgbaToBitmap8888)
 
         /****************************************************************************************/
-        val rgbaToBitmap565 = YuvUtils.rgbaToBitmap565(rgbToRgba, width, height)
+        val rgbaToBitmap565 = ImageUtils.rgbaToBitmap565(rgbToRgba, width, height)
         if (rgbaToBitmap565 == null) {
             LogUtils.e("RGBA 转 Bitmap565 失败")
             return
@@ -219,7 +221,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun rgbaConvert(bitmap: Bitmap, width: Int, height: Int) {
         LogUtils.e("config = ${bitmap.config}")
-        val bitmapToRgba = YuvUtils.bitmapToRgba(bitmap)
+        val bitmapToRgba = ImageUtils.bitmapToRgba(bitmap)
         if (bitmapToRgba == null) {
             LogUtils.e("Bitmap 转 RGBA 失败")
             return
@@ -228,7 +230,7 @@ class MainActivity : AppCompatActivity() {
 
 
         /****************************************************************************************/
-        val rgbaToBitmap8888 = YuvUtils.rgbaToBitmap8888(bitmapToRgba, width, height)
+        val rgbaToBitmap8888 = ImageUtils.rgbaToBitmap8888(bitmapToRgba, width, height)
         if (rgbaToBitmap8888 == null) {
             LogUtils.e("RGBA 转 Bitmap8888 失败")
             return
@@ -237,7 +239,7 @@ class MainActivity : AppCompatActivity() {
         // imageView.setImageBitmap(rgbaToBitmap8888)
 
         /****************************************************************************************/
-        val rgbaToBitmap565 = YuvUtils.rgbaToBitmap565(bitmapToRgba, width, height)
+        val rgbaToBitmap565 = ImageUtils.rgbaToBitmap565(bitmapToRgba, width, height)
         if (rgbaToBitmap565 == null) {
             LogUtils.e("RGBA 转 Bitmap565 失败")
             return
@@ -247,14 +249,14 @@ class MainActivity : AppCompatActivity() {
 
         /****************************************************************************************/
 
-        val rgbaToNV21 = YuvUtils.rgbaToNV21(bitmapToRgba, width, height)
+        val rgbaToNV21 = ImageUtils.rgbaToNV21(bitmapToRgba, width, height)
         if (rgbaToNV21 == null) {
             LogUtils.e("RGBA 转 NV21失败")
             return
         }
 
         /****************************************************************************************/
-        val nv21ToBitmap8888 = YuvUtils.nv21ToBitmap8888(rgbaToNV21, width, height)
+        val nv21ToBitmap8888 = ImageUtils.nv21ToBitmap8888(rgbaToNV21, width, height)
         if (nv21ToBitmap8888 == null) {
             LogUtils.e("NV21 转 Bitmap8888 失败")
             return
@@ -263,7 +265,7 @@ class MainActivity : AppCompatActivity() {
         // imageView.setImageBitmap(nv21ToBitmap8888)
 
         /****************************************************************************************/
-        val nv21ToBitmap565 = YuvUtils.nv21ToBitmap565(rgbaToNV21, width, height)
+        val nv21ToBitmap565 = ImageUtils.nv21ToBitmap565(rgbaToNV21, width, height)
         if (nv21ToBitmap565 == null) {
             LogUtils.e("NV21 转 Bitmap565 失败")
             return
@@ -272,14 +274,14 @@ class MainActivity : AppCompatActivity() {
         //imageView.setImageBitmap(nv21ToBitmap565)
 
         /****************************************************************************************/
-        val rgbaToI420 = YuvUtils.rgbaToI420(bitmapToRgba, width, height)
+        val rgbaToI420 = ImageUtils.rgbaToI420(bitmapToRgba, width, height)
         if (rgbaToI420 == null) {
             LogUtils.e("RGBA 转 I420 失败")
             return
         }
 
         /****************************************************************************************/
-        val i420ToBitmap8888 = YuvUtils.i420ToBitmap8888(rgbaToI420, width, height)
+        val i420ToBitmap8888 = ImageUtils.i420ToBitmap8888(rgbaToI420, width, height)
         if (i420ToBitmap8888 == null) {
             LogUtils.e("I420 转 Bitmap8888 失败")
             return
@@ -288,7 +290,7 @@ class MainActivity : AppCompatActivity() {
         // imageView.setImageBitmap(i420ToBitmap8888)
 
         /****************************************************************************************/
-        val i420ToBitmap565 = YuvUtils.i420ToBitmap565(rgbaToI420, width, height)
+        val i420ToBitmap565 = ImageUtils.i420ToBitmap565(rgbaToI420, width, height)
         if (i420ToBitmap565 == null) {
             LogUtils.e("I420 转 Bitmap565 失败")
             return
@@ -298,14 +300,14 @@ class MainActivity : AppCompatActivity() {
         // imageView.setImageBitmap(i420ToBitmap565)
 
         /****************************************************************************************/
-        val rgbaToRgb = YuvUtils.rgbaToRgb(bitmapToRgba, width, height)
+        val rgbaToRgb = ImageUtils.rgbaToRgb565(bitmapToRgba, width, height)
         if (rgbaToRgb == null) {
             LogUtils.e("RGBA 转 RGB 失败")
             return
         }
 
         /****************************************************************************************/
-        val rgbToBitmap8888 = YuvUtils.rgbToBitmap8888(rgbaToRgb, width, height)
+        val rgbToBitmap8888 = ImageUtils.rgb565ToBitmap8888(rgbaToRgb, width, height)
         if (rgbToBitmap8888 == null) {
             LogUtils.e("RGB 转 Bitmap8888 失败")
             return
@@ -315,7 +317,7 @@ class MainActivity : AppCompatActivity() {
         // imageView.setImageBitmap(rgbToBitmap8888)
 
         /****************************************************************************************/
-        val rgbToBitmap565 = YuvUtils.rgbToBitmap565(rgbaToRgb, width, height)
+        val rgbToBitmap565 = ImageUtils.rgb565ToBitmap565(rgbaToRgb, width, height)
         if (rgbToBitmap565 == null) {
             LogUtils.e("RGB 转 Bitmap565 失败")
             return
@@ -325,13 +327,13 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun i420Convert(bitmap: Bitmap, width: Int, height: Int) {
-        val bitmapToI420 = YuvUtils.bitmapToI420(bitmap)
+        val bitmapToI420 = ImageUtils.bitmapToI420(bitmap)
         if (bitmapToI420 == null) {
             LogUtils.e("Bitmap 转 I420 失败")
             return
         }
         /****************************************************************************************/
-        val i420ToBitmap8888 = YuvUtils.i420ToBitmap8888(bitmapToI420, width, height)
+        val i420ToBitmap8888 = ImageUtils.i420ToBitmap8888(bitmapToI420, width, height)
         if (i420ToBitmap8888 == null) {
             LogUtils.e("I420 转 Bitmap8888 失败")
             return
@@ -340,7 +342,7 @@ class MainActivity : AppCompatActivity() {
         //imageView.setImageBitmap(i420ToBitmap8888)
 
         /****************************************************************************************/
-        val i420ToBitmap565 = YuvUtils.i420ToBitmap565(bitmapToI420, width, height)
+        val i420ToBitmap565 = ImageUtils.i420ToBitmap565(bitmapToI420, width, height)
         if (i420ToBitmap565 == null) {
             LogUtils.e("I420 转 Bitmap565 失败")
             return
@@ -349,14 +351,14 @@ class MainActivity : AppCompatActivity() {
         //imageView.setImageBitmap(i420ToBitmap565)
 
         /****************************************************************************************/
-        val i420ToNV21 = YuvUtils.i420ToNV21(bitmapToI420, width, height)
+        val i420ToNV21 = ImageUtils.i420ToNV21(bitmapToI420, width, height)
         if (i420ToNV21 == null) {
             LogUtils.e("I420 转 NV21失败")
             return
         }
 
         /****************************************************************************************/
-        val nv21ToBitmap8888 = YuvUtils.nv21ToBitmap8888(i420ToNV21, width, height)
+        val nv21ToBitmap8888 = ImageUtils.nv21ToBitmap8888(i420ToNV21, width, height)
         if (nv21ToBitmap8888 == null) {
             LogUtils.e("NV21 转 Bitmap8888 失败")
             return
@@ -365,7 +367,7 @@ class MainActivity : AppCompatActivity() {
         //imageView.setImageBitmap(nv21ToBitmap8888)
 
         /****************************************************************************************/
-        val nv21ToBitmap565 = YuvUtils.nv21ToBitmap565(i420ToNV21, width, height)
+        val nv21ToBitmap565 = ImageUtils.nv21ToBitmap565(i420ToNV21, width, height)
         if (nv21ToBitmap565 == null) {
             LogUtils.e("NV21 转 Bitmap8888 失败")
             return
@@ -374,14 +376,14 @@ class MainActivity : AppCompatActivity() {
         //imageView.setImageBitmap(nv21ToBitmap565)
 
         /****************************************************************************************/
-        val i420ToRgba = YuvUtils.i420ToRgba(bitmapToI420, width, height)
+        val i420ToRgba = ImageUtils.i420ToRgba(bitmapToI420, width, height)
         if (i420ToRgba == null) {
             LogUtils.e("I420 转 RGBA失败")
             return
         }
 
         /****************************************************************************************/
-        val rgbaToBitmap8888 = YuvUtils.rgbaToBitmap8888(i420ToRgba, width, height)
+        val rgbaToBitmap8888 = ImageUtils.rgbaToBitmap8888(i420ToRgba, width, height)
         if (rgbaToBitmap8888 == null) {
             LogUtils.e("RGBA 转 Bitmap8888 失败")
             return
@@ -390,7 +392,7 @@ class MainActivity : AppCompatActivity() {
         //imageView.setImageBitmap(rgbaToBitmap8888)
 
         /****************************************************************************************/
-        val rgbaToBitmap565 = YuvUtils.rgbaToBitmap565(i420ToRgba, width, height)
+        val rgbaToBitmap565 = ImageUtils.rgbaToBitmap565(i420ToRgba, width, height)
         if (rgbaToBitmap565 == null) {
             LogUtils.e("RGBA 转 Bitmap8888 失败")
             return
@@ -399,14 +401,14 @@ class MainActivity : AppCompatActivity() {
         // imageView.setImageBitmap(rgbaToBitmap565)
 
         /****************************************************************************************/
-        val i420ToRgb = YuvUtils.i420ToRgb(bitmapToI420, width, height)
+        val i420ToRgb = ImageUtils.i420ToRgb565(bitmapToI420, width, height)
         if (i420ToRgb == null) {
             LogUtils.e("I420 转 RGB失败")
             return
         }
 
         /****************************************************************************************/
-        val rgbToBitmap8888 = YuvUtils.rgbToBitmap8888(i420ToRgb, width, height)
+        val rgbToBitmap8888 = ImageUtils.rgb565ToBitmap8888(i420ToRgb, width, height)
         if (rgbToBitmap8888 == null) {
             LogUtils.e("RGBA 转 Bitmap8888 失败")
             return
@@ -415,7 +417,7 @@ class MainActivity : AppCompatActivity() {
         //imageView.setImageBitmap(rgbToBitmap8888)
 
         /****************************************************************************************/
-        val rgbToBitmap565 = YuvUtils.rgbToBitmap565(i420ToRgb, width, height)
+        val rgbToBitmap565 = ImageUtils.rgb565ToBitmap565(i420ToRgb, width, height)
         if (rgbToBitmap565 == null) {
             LogUtils.e("RGBA 转 Bitmap8888 失败")
             return
@@ -425,14 +427,14 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun nv21Convert(bitmap: Bitmap, width: Int, height: Int) {
-        val bitmapToNV21 = YuvUtils.bitmapToNV21(bitmap)
+        val bitmapToNV21 = ImageUtils.bitmapToNV21(bitmap)
         if (bitmapToNV21 == null) {
             LogUtils.e("Bitmap 转 NV21 失败")
             return
         }
 
         /****************************************************************************************/
-        val nv21ToBitmap565 = YuvUtils.nv21ToBitmap565(bitmapToNV21, width, height)
+        val nv21ToBitmap565 = ImageUtils.nv21ToBitmap565(bitmapToNV21, width, height)
         if (nv21ToBitmap565 == null) {
             LogUtils.e("NV21 转 Bitmap565 失败")
             return
@@ -441,7 +443,7 @@ class MainActivity : AppCompatActivity() {
         //imageView.setImageBitmap(nv21ToBitmap565)
 
         /****************************************************************************************/
-        val nv21ToBitmap8888 = YuvUtils.nv21ToBitmap8888(bitmapToNV21, width, height)
+        val nv21ToBitmap8888 = ImageUtils.nv21ToBitmap8888(bitmapToNV21, width, height)
         if (nv21ToBitmap8888 == null) {
             LogUtils.e("NV21 转 Bitmap8888 失败")
             return
@@ -450,14 +452,14 @@ class MainActivity : AppCompatActivity() {
         //imageView.setImageBitmap(nv21ToBitmap8888)
 
         /****************************************************************************************/
-        val nv21ToI420 = YuvUtils.nv21ToI420(bitmapToNV21, width, height)
+        val nv21ToI420 = ImageUtils.nv21ToI420(bitmapToNV21, width, height)
         if (nv21ToI420 == null) {
             LogUtils.e("NV21 转 I420 失败")
             return
         }
 
         /****************************************************************************************/
-        val i420ToBitmap8888 = YuvUtils.i420ToBitmap8888(nv21ToI420, width, height)
+        val i420ToBitmap8888 = ImageUtils.i420ToBitmap8888(nv21ToI420, width, height)
         if (i420ToBitmap8888 == null) {
             LogUtils.e("I420 转 Bitmap8888 失败")
             return
@@ -466,7 +468,7 @@ class MainActivity : AppCompatActivity() {
         //imageView.setImageBitmap(i420ToBitmap8888)
 
         /****************************************************************************************/
-        val i420ToBitmap565 = YuvUtils.i420ToBitmap565(nv21ToI420, width, height)
+        val i420ToBitmap565 = ImageUtils.i420ToBitmap565(nv21ToI420, width, height)
         if (i420ToBitmap565 == null) {
             LogUtils.e("I420 转 Bitmap565 失败")
             return
@@ -475,14 +477,14 @@ class MainActivity : AppCompatActivity() {
         //imageView.setImageBitmap(i420ToBitmap565)
 
         /****************************************************************************************/
-        val nv21ToRgb = YuvUtils.nv21ToRgb(bitmapToNV21, width, height)
+        val nv21ToRgb = ImageUtils.nv21ToRgb565(bitmapToNV21, width, height)
         if (nv21ToRgb == null) {
             LogUtils.e("NV21 转 RGB 失败")
             return
         }
 
         /****************************************************************************************/
-        val rgbToBitmap565 = YuvUtils.rgbToBitmap565(nv21ToRgb, width, height)
+        val rgbToBitmap565 = ImageUtils.rgb565ToBitmap565(nv21ToRgb, width, height)
         if (rgbToBitmap565 == null) {
             LogUtils.e("RGB 转 Bitmap565 失败")
             return
@@ -491,7 +493,7 @@ class MainActivity : AppCompatActivity() {
         // imageView.setImageBitmap(rgbToBitmap565)
 
         /****************************************************************************************/
-        val rgbToBitmap8888 = YuvUtils.rgbToBitmap8888(nv21ToRgb, width, height)
+        val rgbToBitmap8888 = ImageUtils.rgb565ToBitmap8888(nv21ToRgb, width, height)
         if (rgbToBitmap8888 == null) {
             LogUtils.e("RGB 转 Bitmap8888 失败")
             return
@@ -500,7 +502,7 @@ class MainActivity : AppCompatActivity() {
         //  imageView.setImageBitmap(rgbToBitmap8888)
 
         /****************************************************************************************/
-        val nv21ToRgba = YuvUtils.nv21ToRgba(bitmapToNV21, width, height)
+        val nv21ToRgba = ImageUtils.nv21ToRgba(bitmapToNV21, width, height)
         if (nv21ToRgba == null) {
             LogUtils.e("NV21 转 RGBA 失败")
             return
@@ -508,7 +510,7 @@ class MainActivity : AppCompatActivity() {
 
 
         /****************************************************************************************/
-        val rgbaToBitmap8888 = YuvUtils.rgbaToBitmap8888(nv21ToRgba, width, height)
+        val rgbaToBitmap8888 = ImageUtils.rgbaToBitmap8888(nv21ToRgba, width, height)
         if (rgbaToBitmap8888 == null) {
             LogUtils.e("RGBA 转 Bitmap8888 失败")
             return
@@ -517,7 +519,7 @@ class MainActivity : AppCompatActivity() {
         // imageView.setImageBitmap(rgbaToBitmap8888)
 
         /****************************************************************************************/
-        val rgbaToBitmap565 = YuvUtils.rgbaToBitmap565(nv21ToRgba, width, height)
+        val rgbaToBitmap565 = ImageUtils.rgbaToBitmap565(nv21ToRgba, width, height)
         if (rgbaToBitmap565 == null) {
             LogUtils.e("RGBA 转 Bitmap8888 失败")
             return

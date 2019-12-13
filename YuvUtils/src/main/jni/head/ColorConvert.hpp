@@ -16,6 +16,7 @@ namespace yancy {
         NV21 = 1,
         I420 = 2,
         RGB565 = 3,
+        RGB24 = 4,    // ie. RGB888
         ARGB_8888 = 5 // in libyuv is ABGR format
     } ImageFormat;
 
@@ -23,11 +24,15 @@ namespace yancy {
 
     libyuv::FilterMode getFilterMode(int filterMode);
 
+    int getDataSize(int width, int height, int dataFormat);
+
     int NV21ToRGBA(const uint8 *src_nv21_data, int width, int height, uint8 *dst_rgba);
 
     int NV21ToRGB565(const uint8 *src_nv21_data, int width, int height, uint8 *dst_rgba);
 
     int NV21ToI420(const uint8 *src_nv21_data, int width, int height, uint8 *dst_I420);
+
+    int NV21ToRGB24(const uint8 *src_nv21_data, int width, int height, uint8 *dst_rgb24_data);
 
     ///////////////////////////////////////////////////////////////////////////////////
 
@@ -37,6 +42,8 @@ namespace yancy {
 
     int I420ToNV21(const uint8 *src_i420_data, int width, int height, uint8 *dst_nv21_data);
 
+    int I420ToRGB24(const uint8 *src_i420_data, int width, int height, uint8 *dst_rgb24_data);
+
     ///////////////////////////////////////////////////////////////////////////////////
 
     int RGBAToNV21(const uint8 *src_rgba_data, int width, int height, uint8 *dst_nv21_data);
@@ -44,6 +51,18 @@ namespace yancy {
     int RGBAToI420(const uint8 *src_rgba_data, int width, int height, uint8 *dst_i420_data);
 
     int RGBAToRGB565(const uint8 *src_rgba_data, int width, int height, uint8 *dst_rgb_data);
+
+    int RGBAToRGB24(const uint8 *src_rgba_data, int width, int height, uint8 *dst_rgb24_data);
+
+    ///////////////////////////////////////////////////////////////////////////////////
+
+    int RGB24ToNV21(const uint8 *src_rgb24_data, int width, int height, uint8 *dst_nv21_data);
+
+    int RGB24ToI420(const uint8 *src_rgb24_data, int width, int height, uint8 *dst_i420_data);
+
+    int RGB24ToRGB565(const uint8 *src_rgb24_data, int width, int height, uint8 *dst_rgb_data);
+
+    int RGB24ToRGBA(const uint8 *src_rgb24_data, int width, int height, uint8 *dst_rgba_data);
 
     ///////////////////////////////////////////////////////////////////////////////////
 
@@ -53,8 +72,7 @@ namespace yancy {
 
     int RGB565ToRGBA(const uint8 *src_rgb_data, int width, int height, uint8 *dst_rgba_data);
 
-
-    int NV21Rotate(const uint8 *src_nv21_data, int width, int height, uint8 *dst_nv21_rotate);
+    int RGB565ToRGB24(const uint8 *src_rgb_data, int width, int height, uint8 *dst_rgb24_data);
 
     ///////////////////////////////////////////////////////////////////////////////////
 

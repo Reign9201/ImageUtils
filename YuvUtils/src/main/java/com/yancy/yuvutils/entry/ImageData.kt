@@ -6,11 +6,11 @@ import android.graphics.Rect
 import com.yancy.yuvutils.annotation.RotateDegree
 
 /**
- * 说明：
+ * 说明：图像数据data
  * @author  Yancy
  * @date 2019/11/29
  */
-data class ImageData(
+class ImageData(
     val data: ByteArray,
     val dataFormat: ImageFormat,
     val width: Int,
@@ -26,30 +26,32 @@ enum class ImageFormat(var format: Int) {
     NV21(1),
     I420(2),
     RGB_565(3),
+    RGB_888(4),
     ARGB_8888(5)
 }
 
 /**
  * libyuv做图像缩放时候的过滤模式
  */
-enum class FilterMode(var fillter: Int) {
+@Suppress("UNUSED")
+enum class FilterMode(var filter: Int) {
     /**
      * Point sample; Fastest.
      */
-    kFilterNone(0),
+    FilterNone(0),
 
     /**
      * Filter horizontally only.
      */
-    kFilterLinear(1),
+    FilterLinear(1),
 
     /**
      *  Faster than box, but lower quality scaling down.
      */
-    kFilterBilinear(2),
+    FilterBilinear(2),
 
     /**
      * Highest quality.
      */
-    kFilterBox(3)
+    FilterBox(3)
 }
