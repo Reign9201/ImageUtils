@@ -9,7 +9,7 @@ import android.util.Log
  * @date 2018/9/20
  */
 object LogUtils {
-    private var TAG = "FaceSdkEngine"
+    private var TAG = "YuvUtils"
     private var openLog = true
     @JvmStatic
     fun setTag(tag: String) {

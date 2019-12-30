@@ -27,7 +27,7 @@ static JNINativeMethod gMethods[] = {
         {"dataMirror",             "([BIIIIZ)[B",                                                (void *) dataMirror},
 
         // 图像缩放操作
-        {"dataScale",              "([BII)Landroid/graphics/Bitmap;",                            (void *) dataScale},
+        {"dataScale",              "([BIIIIIII)[B",                                              (void *) dataScale},
 
         // int数组类型数据与byte数组类型数据互转
         {"intArrayToByteArray",    "([I)[B",                                                     (void *) intArrayToByteArray},
@@ -171,6 +171,7 @@ jobject imageToBitmap(JNIEnv *env, jclass clazz, jbyteArray src_data, jint width
                 default:
                     return nullptr;
             }
+            break;
         case 2:
             switch (bitmapConfig) {
                 case 3:
@@ -180,20 +181,23 @@ jobject imageToBitmap(JNIEnv *env, jclass clazz, jbyteArray src_data, jint width
                 default:
                     return nullptr;
             }
+            break;
         case 3:
             switch (bitmapConfig) {
-                case 3:
+                case 3: {
                     jbyte *src_data_bytes = checkDataAndConvert(env, src_data, width * height * 2);
                     auto callback = [=](unsigned char *pixel) -> void {
                         memcpy(pixel, reinterpret_cast<unsigned char *>(src_data_bytes),
                                sizeof(unsigned char) * (width * height * 2));
                     };
-                    return createBitmap(env, src_data, src_data_bytes, width, height, callback);
+                    return createBitmap(env, src_data, src_data_bytes, width, height, callback, RGB_565);
+                }
                 case 5:
                     return __ImageToBitmap__(env, src_data, width, height, dataFormat, bitmapConfig, yancy::RGB565ToRGBA);
                 default:
                     return nullptr;
             }
+            break;
         case 4:
             switch (bitmapConfig) {
                 case 3:
@@ -208,13 +212,14 @@ jobject imageToBitmap(JNIEnv *env, jclass clazz, jbyteArray src_data, jint width
             switch (bitmapConfig) {
                 case 3:
                     return __ImageToBitmap__(env, src_data, width, height, dataFormat, bitmapConfig, yancy::RGBAToRGB565);
-                case 5:
+                case 5: {
                     jbyte *src_data_bytes = checkDataAndConvert(env, src_data, width * height * 4);
                     auto callback = [=](unsigned char *pixel) -> void {
                         memcpy(pixel, reinterpret_cast<unsigned char *>(src_data_bytes),
                                sizeof(unsigned char) * (width * height * 4));
                     };
                     return createBitmap(env, src_data, src_data_bytes, width, height, callback);
+                }
                 default:
                     return nullptr;
             }
@@ -346,12 +351,11 @@ dataClipRotate(JNIEnv *env, jclass clazz, jbyteArray byteArray, jint dataFormat,
         return nullptr;
     }
     jbyte *src_data = checkDataAndConvert(env, byteArray, convertData.dataSize);
-    auto callback = [=](uint8 *pixels) {
-        yancy::DataConvert(reinterpret_cast<unsigned char *>(src_data), width, height, convertData.dataSize,
-                           pixels, convertData.targetWidth, convertData.targetHeight,
-                           degree, convertData.format, targetFormat, convertData.rotateMode,
-                           convertData.crop_x, convertData.crop_y);
-
+    auto callback = [=](uint8 *pixels) -> int {
+        return yancy::DataConvert(reinterpret_cast<unsigned char *>(src_data), width, height, convertData.dataSize,
+                                  pixels, convertData.targetWidth, convertData.targetHeight,
+                                  degree, convertData.format, targetFormat, convertData.rotateMode,
+                                  convertData.crop_x, convertData.crop_y);
     };
     return createColorBytes(
             env, byteArray, src_data,
@@ -402,6 +406,10 @@ jbyteArray dataMirror(JNIEnv *env, jclass clazz, jbyteArray byteArray, jint widt
             dataSize = width * height * 2;
             src_fourcc = libyuv::FOURCC_RGBP;
             break;
+        case 4:
+            dataSize = width * height * 3;
+            src_fourcc = libyuv::FOURCC_BGR3;
+            break;
         case 5:
             dataSize = width * height * 4;
             src_fourcc = libyuv::FOURCC_ABGR;
@@ -426,6 +434,10 @@ jbyteArray dataMirror(JNIEnv *env, jclass clazz, jbyteArray byteArray, jint widt
         case 3:
             dst_data_size = width * height * 2;
             dst_fourcc = libyuv::FOURCC_RGBP;
+            break;
+        case 4:
+            dst_data_size = width * height * 3;
+            dst_fourcc = libyuv::FOURCC_BGR3;
             break;
         case 5:
             dst_data_size = width * height * 4;
@@ -489,8 +501,7 @@ int convertDataHandle(JNIEnv *env, jint dataFormat,
             convertData->dataSize = width * height * 2;
             break;
         case 4:
-            // TODO 待确认是否正确
-            convertData->format = libyuv::FOURCC_RGB3;
+            convertData->format = libyuv::FOURCC_BGR3;
             convertData->dataSize = width * height * 3;
             break;
         case 5:
@@ -568,6 +579,8 @@ dataScale(JNIEnv *env, jclass clazz, jbyteArray byteArray, jint width, jint heig
         src_data = checkDataAndConvert(env, byteArray, width * height + ((width + 1) / 2) * ((height + 1) / 2) * 2);
     } else if (dataFormat == 3) {
         src_data = checkDataAndConvert(env, byteArray, width * height * 2);
+    } else if (dataFormat == 4) {
+        src_data = checkDataAndConvert(env, byteArray, width * height * 3);
     } else if (dataFormat == 5) {
         src_data = checkDataAndConvert(env, byteArray, width * height * 4);
     }
@@ -578,13 +591,16 @@ dataScale(JNIEnv *env, jclass clazz, jbyteArray byteArray, jint width, jint heig
     int dst_data_size = 0;
 
     if (targetFormat == 1 || targetFormat == 2) {
-        dst_data_size = width * height + ((width + 1) / 2) * ((height + 1) / 2) * 2;
+        dst_data_size = dstWidth * dstHeight + ((dstWidth + 1) / 2) * ((dstHeight + 1) / 2) * 2;
     } else if (targetFormat == 3) {
-        dst_data_size = width * height * 2;
+        dst_data_size = dstWidth * dstHeight * 2;
+    } else if (targetFormat == 4) {
+        dst_data_size = dstWidth * dstHeight * 3;
     } else if (targetFormat == 5) {
-        dst_data_size = width * height * 4;
+        dst_data_size = dstWidth * dstHeight * 4;
     }
     if (dst_data_size == 0) {
+        logger::error("Not support this format!");
         return nullptr;
     }
     uint8 *dst_data = new uint8[dst_data_size];

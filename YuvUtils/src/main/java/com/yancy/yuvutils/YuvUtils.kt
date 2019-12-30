@@ -80,11 +80,11 @@ object YuvUtils {
      * 各种类型的图像数据裁剪和旋转操作
      *
      * @param data         原始数据
-     * @param dataFormat   数据格式，可参考 {@link ImageData # ImageFormat}
+     * @param dataFormat   数据格式，可参考 {@link ImageInfo # ImageFormat}
      * @param width        原始数据的宽
      * @param height       原始数据的高
      * @param rect         裁剪矩形，可为 null
-     * @param targetFormat 生成的图像格式，可参考 {@link ImageData # ImageFormat}
+     * @param targetFormat 生成的图像格式，可参考 {@link ImageInfo # ImageFormat}
      * @param priorityClip 是否优先支持裁剪操作，true 是。
      *                     需要注意的是，是先裁剪在旋转和先旋转再裁剪是两种不同的操作
      */
@@ -103,7 +103,7 @@ object YuvUtils {
      * 各种类型的图像数据裁剪和旋转后生成位图操作
      *
      * @param data         原始数据
-     * @param dataFormat   数据格式，可参考 {@link ImageData # ImageFormat}
+     * @param dataFormat   数据格式，可参考 {@link ImageInfo # ImageFormat}
      * @param width        原始数据的宽
      * @param height       原始数据的高
      * @param rect         裁剪矩形，可为 null

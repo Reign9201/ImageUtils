@@ -10,7 +10,7 @@ import com.yancy.yuvutils.annotation.RotateDegree
  * @author  Yancy
  * @date 2019/11/29
  */
-class ImageData(
+class ImageInfo(
     val data: ByteArray,
     val dataFormat: ImageFormat,
     val width: Int,
@@ -26,7 +26,7 @@ enum class ImageFormat(var format: Int) {
     NV21(1),
     I420(2),
     RGB_565(3),
-    RGB_888(4),
+    BGR_888(4),
     ARGB_8888(5)
 }
 

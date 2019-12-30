@@ -11,12 +11,12 @@
 typedef int __convert__(const uint8 *src_data, int width, int height, uint8 *dst_data);
 
 namespace yancy {
-    typedef enum ImageFormat{
+    typedef enum ImageFormat {
         NONE = 0,
         NV21 = 1,
         I420 = 2,
         RGB565 = 3,
-        RGB24 = 4,    // ie. RGB888
+        RGB24 = 4,    // ie. BGR888
         ARGB_8888 = 5 // in libyuv is ABGR format
     } ImageFormat;
 
@@ -93,50 +93,21 @@ namespace yancy {
 
 
     ///////////////////////////////////////////////////////////////////////////////////
-    int __NV21MirrorToNV21__(const uint8 *src_data, uint8 **dst_data, int width, int height, bool vertical_mirror = false);
-
-    int __NV21MirrorToI420__(const uint8 *src_data, uint8 **dst_data, int width, int height, bool vertical_mirror = false);
-
-    int __NV21MirrorToABGR__(const uint8 *src_data, uint8 **dst_data, int width, int height, bool vertical_mirror = false);
-
-    int __NV21MirrorToRGB565__(const uint8 *src_data, uint8 **dst_data, int width, int height, bool vertical_mirror = false);
-
-
-    int __I420MirrorToNV21__(const uint8 *src_data, uint8 **dst_data, int width, int height, bool vertical_mirror = false);
-
     int __I420MirrorToI420__(const uint8 *src_data, uint8 **dst_data, int width, int height, bool vertical_mirror = false);
 
-    int __I420MirrorToABGR__(const uint8 *src_data, uint8 **dst_data, int width, int height, bool vertical_mirror = false);
-
-    int __I420MirrorToRGB565__(const uint8 *src_data, uint8 **dst_data, int width, int height, bool vertical_mirror = false);
-
-
-    int __ABGRMirrorToNV21__(const uint8 *src_data, uint8 **dst_data, int width, int height, bool vertical_mirror = false);
-
-    int __ABGRMirrorToI420__(const uint8 *src_data, uint8 **dst_data, int width, int height, bool vertical_mirror = false);
-
-    int __ABGRMirrorToABGR__(const uint8 *src_data, uint8 **dst_data, int width, int height, bool vertical_mirror = false);
-
-    int __ABGRMirrorToRGB565__(const uint8 *src_data, uint8 **dst_data, int width, int height, bool vertical_mirror = false);
-
-
-    int __RGB565MirrorToNV21__(const uint8 *src_data, uint8 **dst_data, int width, int height, bool vertical_mirror = false);
-
-    int __RGB565MirrorToI420__(const uint8 *src_data, uint8 **dst_data, int width, int height, bool vertical_mirror = false);
-
-    int __RGB565MirrorToABGR__(const uint8 *src_data, uint8 **dst_data, int width, int height, bool vertical_mirror = false);
-
-    int __RGB565MirrorToRGB565__(const uint8 *src_data, uint8 **dst_data, int width, int height, bool vertical_mirror = false);
-
+    int __DataMirror__(const uint8 *src_data, int src_width, int src_height, uint8 **dst_data, bool vertical_mirror,
+                       __convert__ pre_convert, __convert__ next_convert);
 
     ///////////////////////////////////////////////////////////////////////////////////
 
     int __I420ScaleToI420__(const uint8 *src_data, int src_width, int src_height, uint8 **dst_data, int dst_width, int dst_height,
 
-                                libyuv::FilterMode filterMode);
+                            libyuv::FilterMode filterMode);
 
     int __DataScale__(const uint8 *src_data, int src_width, int src_height, uint8 **dst_data, int dst_width, int dst_height,
                       libyuv::FilterMode filterMode, __convert__ pre_convert, __convert__ next_convert);
+
+
 }
 
 

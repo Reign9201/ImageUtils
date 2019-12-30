@@ -64,7 +64,6 @@ int yancy::I420ToRGBA(const uint8 *src_i420_data, int width, int height, uint8 *
                               src_i420_data + width * height + (width >> 1) * (height >> 1), width >> 1,
                               dst_rgba_data, width * 4,
                               width, height);
-    //return 0;
 }
 
 int yancy::I420ToRGB565(const uint8 *src_i420_data, int width, int height, uint8 *dst_rgb_data) {
@@ -74,7 +73,6 @@ int yancy::I420ToRGB565(const uint8 *src_i420_data, int width, int height, uint8
                                 dst_rgb_data, width * 2,
                                 width, height);
 
-    //return 0;
 }
 
 int yancy::I420ToNV21(const uint8 *src_i420_data, int width, int height, uint8 *dst_nv21_data) {
@@ -107,14 +105,6 @@ int yancy::RGBAToNV21(const uint8 *src_rgba_data, int width, int height, uint8 *
 }
 
 int yancy::RGBAToI420(const uint8 *src_rgba_data, int width, int height, uint8 *dst_i420_data) {
-    /*if (libyuv::ABGRToI420(src_rgba_data, width * 4,
-                           dst_i420_data, width,
-                           dst_i420_data + width * height, width >> 1,
-                           dst_i420_data + width * height + (width >> 1) * (height >> 1),
-                           width >> 1,
-                           width, height) != 0) {
-        return -1;
-    }*/
     return libyuv::ABGRToI420(src_rgba_data, width * 4,
                               dst_i420_data, width,
                               dst_i420_data + width * height, width >> 1,
@@ -148,6 +138,7 @@ int yancy::RGBAToRGB24(const uint8 *src_rgba_data, int width, int height, uint8 
         delete[] argb;
         return -1;
     }
+
     int resCode = libyuv::ARGBToRGB24(argb, width * 4, dst_rgb24_data, width * 3, width, height);
     delete[] argb;
     return resCode;
@@ -205,7 +196,6 @@ int yancy::RGB565ToNV21(const uint8 *src_rgb_data, int width, int height, uint8 
                              width, height) != 0) {
         return -1;
     }
-
     return I420ToNV21(dst_nv21_data, width, height, dst_nv21_data);
 }
 
@@ -237,177 +227,131 @@ int yancy::RGB565ToRGB24(const uint8 *src_rgb_data, int width, int height, uint8
 
 int yancy::DataMirror(const uint8 *src_data, int width, int height, uint8 **dst_data, int src_fourcc,
                       int dst_fourcc, bool vertical_mirror) {
-
-    int resCode = -1;
-
     switch (src_fourcc) {
         case libyuv::FOURCC_NV21:
             switch (dst_fourcc) {
                 case libyuv::FOURCC_NV21:
-                    resCode = __NV21MirrorToNV21__(src_data, dst_data, width, height, vertical_mirror);
-                    break;
+                    return __DataMirror__(src_data, width, height, dst_data, vertical_mirror, NV21ToI420, I420ToNV21);
                 case libyuv::FOURCC_I420:
-                    resCode = __NV21MirrorToI420__(src_data, dst_data, width, height, vertical_mirror);
-                    break;
+                    return __DataMirror__(src_data, width, height, dst_data, vertical_mirror, NV21ToI420, nullptr);
                 case libyuv::FOURCC_ABGR:
-                    resCode = __NV21MirrorToABGR__(src_data, dst_data, width, height, vertical_mirror);
-                    break;
+                    return __DataMirror__(src_data, width, height, dst_data, vertical_mirror, NV21ToI420, I420ToRGBA);
                 case libyuv::FOURCC_RGBP:
-                    resCode = __NV21MirrorToRGB565__(src_data, dst_data, width, height, vertical_mirror);
-                    break;
+                    return __DataMirror__(src_data, width, height, dst_data, vertical_mirror, NV21ToI420, I420ToRGB565);
+                case libyuv::FOURCC_BGR3:
+                    return __DataMirror__(src_data, width, height, dst_data, vertical_mirror, NV21ToI420, I420ToRGB24);
                 default:
-                    break;
+                    return -1;
             }
-            break;
         case libyuv::FOURCC_I420:
             switch (dst_fourcc) {
                 case libyuv::FOURCC_NV21:
-                    resCode = __I420MirrorToNV21__(src_data, dst_data, width, height, vertical_mirror);
-                    break;
+                    return __DataMirror__(src_data, width, height, dst_data, vertical_mirror, nullptr, I420ToNV21);
                 case libyuv::FOURCC_I420:
-                    resCode = __I420MirrorToI420__(src_data, dst_data, width, height, vertical_mirror);
-                    break;
+                    return __I420MirrorToI420__(src_data, dst_data, width, height, vertical_mirror);
                 case libyuv::FOURCC_ABGR:
-                    resCode = __I420MirrorToABGR__(src_data, dst_data, width, height, vertical_mirror);
-                    break;
+                    return __DataMirror__(src_data, width, height, dst_data, vertical_mirror, nullptr, I420ToRGBA);
                 case libyuv::FOURCC_RGBP:
-                    resCode = __I420MirrorToRGB565__(src_data, dst_data, width, height, vertical_mirror);
-                    break;
+                    return __DataMirror__(src_data, width, height, dst_data, vertical_mirror, nullptr, I420ToRGB565);
+                case libyuv::FOURCC_BGR3:
+                    return __DataMirror__(src_data, width, height, dst_data, vertical_mirror, nullptr, I420ToRGB24);
                 default:
-                    break;
+                    return -1;
             }
-            break;
+
         case libyuv::FOURCC_ABGR:
             switch (dst_fourcc) {
                 case libyuv::FOURCC_NV21:
-                    resCode = __ABGRMirrorToNV21__(src_data, dst_data, width, height, vertical_mirror);
-                    break;
+                    return __DataMirror__(src_data, width, height, dst_data, vertical_mirror, RGBAToI420, I420ToNV21);
                 case libyuv::FOURCC_I420:
-                    resCode = __ABGRMirrorToI420__(src_data, dst_data, width, height, vertical_mirror);
-                    break;
+                    return __DataMirror__(src_data, width, height, dst_data, vertical_mirror, RGBAToI420, nullptr);
                 case libyuv::FOURCC_ABGR:
-                    resCode = __ABGRMirrorToABGR__(src_data, dst_data, width, height, vertical_mirror);
-                    break;
+                    return __DataMirror__(src_data, width, height, dst_data, vertical_mirror, RGBAToI420, I420ToRGBA);
                 case libyuv::FOURCC_RGBP:
-                    resCode = __ABGRMirrorToRGB565__(src_data, dst_data, width, height, vertical_mirror);
-                    break;
+                    return __DataMirror__(src_data, width, height, dst_data, vertical_mirror, RGBAToI420, I420ToRGB565);
+                case libyuv::FOURCC_BGR3:
+                    return __DataMirror__(src_data, width, height, dst_data, vertical_mirror, RGBAToI420, I420ToRGB24);
                 default:
-                    break;
+                    return -1;
+
             }
-            break;
+
         case libyuv::FOURCC_RGBP:
             switch (dst_fourcc) {
                 case libyuv::FOURCC_NV21:
-                    resCode = __RGB565MirrorToNV21__(src_data, dst_data, width, height, vertical_mirror);
-                    break;
+                    return __DataMirror__(src_data, width, height, dst_data, vertical_mirror, RGB565ToI420, I420ToNV21);
                 case libyuv::FOURCC_I420:
-                    resCode = __RGB565MirrorToI420__(src_data, dst_data, width, height, vertical_mirror);
-                    break;
+                    return __DataMirror__(src_data, width, height, dst_data, vertical_mirror, RGB565ToI420, nullptr);
                 case libyuv::FOURCC_ABGR:
-                    resCode = __RGB565MirrorToABGR__(src_data, dst_data, width, height, vertical_mirror);
-                    break;
+                    return __DataMirror__(src_data, width, height, dst_data, vertical_mirror, RGB565ToI420, I420ToRGBA);
                 case libyuv::FOURCC_RGBP:
-                    resCode = __RGB565MirrorToRGB565__(src_data, dst_data, width, height, vertical_mirror);
-                    break;
+                    return __DataMirror__(src_data, width, height, dst_data, vertical_mirror, RGB565ToI420, I420ToRGB565);
+                case libyuv::FOURCC_BGR3:
+                    return __DataMirror__(src_data, width, height, dst_data, vertical_mirror, RGB565ToI420, I420ToRGB24);
                 default:
-                    break;
+                    return -1;
             }
-            break;
+
+        case libyuv::FOURCC_BGR3:
+            switch (dst_fourcc) {
+                case libyuv::FOURCC_NV21:
+                    return __DataMirror__(src_data, width, height, dst_data, vertical_mirror, RGB24ToI420, I420ToNV21);
+                case libyuv::FOURCC_I420:
+                    return __DataMirror__(src_data, width, height, dst_data, vertical_mirror, RGB24ToI420, nullptr);
+                case libyuv::FOURCC_ABGR:
+                    return __DataMirror__(src_data, width, height, dst_data, vertical_mirror, RGB24ToI420, I420ToRGBA);
+                case libyuv::FOURCC_RGBP:
+                    return __DataMirror__(src_data, width, height, dst_data, vertical_mirror, RGB24ToI420, I420ToRGB565);
+                case libyuv::FOURCC_BGR3:
+                    return __DataMirror__(src_data, width, height, dst_data, vertical_mirror, RGB24ToI420, I420ToRGB24);
+                default:
+                    return -1;
+            }
+
         default:
-            break;
+            return -1;
     }
 
-    return resCode;
 }
 
-int yancy::__NV21MirrorToNV21__(const uint8 *src_data, uint8 **dst_data, int width, int height,
-                                bool vertical_mirror) {
 
-    uint8 *src_data_i420 = new uint8[width * height + ((width + 1) / 2) * ((height + 1) / 2) * 2];
-    uint8 *src_data_i420_mirror = new uint8[width * height + ((width + 1) / 2) * ((height + 1) / 2) * 2];
-
-
-    if (NV21ToI420(src_data, width, height, src_data_i420) != 0) {
+int yancy::__DataMirror__(const uint8 *src_data, int src_width, int src_height, uint8 **dst_data, bool vertical_mirror,
+                          __convert__ pre_convert,
+                          __convert__ next_convert) {
+    uint8 *src_data_i420 = 0;
+    if (pre_convert != nullptr) {
+        src_data_i420 = new uint8[src_width * src_height + ((src_width + 1) / 2) * ((src_height + 1) / 2) * 2];
+        if (pre_convert(src_data, src_width, src_height, src_data_i420) != 0) {
+            delete[] src_data_i420;
+            return -1;
+        }
+    }
+    uint8 *src_data_i420_mirror = 0;
+    if (next_convert != nullptr) {
+        src_data_i420_mirror = new uint8[src_width * src_height + ((src_width + 1) / 2) * ((src_height + 1) / 2) * 2];
+    }
+    int resCode = __I420MirrorToI420__(src_data_i420 == 0 ? src_data : src_data_i420,
+                                       src_data_i420_mirror == 0 ? dst_data : &src_data_i420_mirror, src_width, src_height,
+                                       vertical_mirror);
+    if (resCode != 0 || next_convert == nullptr) {
+        if (src_data_i420 != 0) {
+            delete[] src_data_i420;
+        }
+        if (src_data_i420_mirror != 0) {
+            delete[] src_data_i420_mirror;
+        }
+        return resCode;
+    }
+    resCode = next_convert(
+            src_data_i420_mirror != 0 ? src_data_i420_mirror : src_data_i420 != 0 ? src_data_i420 : src_data,
+            src_width, src_height, *dst_data);
+    if (src_data_i420 != 0) {
         delete[] src_data_i420;
+    }
+    if (src_data_i420_mirror != 0) {
         delete[] src_data_i420_mirror;
-        return -1;
-    }
-    if (libyuv::I420Mirror(src_data_i420, width,
-                           src_data_i420 + width * height, width >> 1,
-                           src_data_i420 + width * height + (width >> 1) * (height >> 1), width >> 1,
-                           src_data_i420_mirror, width,
-                           src_data_i420_mirror + width * height, width >> 1,
-                           src_data_i420_mirror + width * height + (width >> 1) * (height >> 1), width >> 1,
-                           width, vertical_mirror ? -height : height) != 0) {
-        delete[] src_data_i420;
-        delete[] src_data_i420_mirror;
-        return -1;
-    }
-    int code = I420ToNV21(src_data_i420_mirror, width, height, *dst_data);
-    delete[] src_data_i420;
-    delete[] src_data_i420_mirror;
-    return code;
-}
-
-int yancy::__NV21MirrorToI420__(const uint8 *src_data, uint8 **dst_data, int width, int height, bool vertical_mirror) {
-    uint8 *src_data_i420 = new uint8[width * height +
-                                     ((width + 1) / 2) * ((height + 1) / 2) * 2];
-    if (NV21ToI420(src_data, width, height, src_data_i420) != 0) {
-        delete[] src_data_i420;
-        return -1;
-    }
-    int resCode = libyuv::I420Mirror(src_data_i420, width,
-                                     src_data_i420 + width * height, width >> 1,
-                                     src_data_i420 + width * height + (width >> 1) * (height >> 1), width >> 1,
-                                     *dst_data, width,
-                                     *dst_data + width * height, width >> 1,
-                                     *dst_data + width * height + (width >> 1) * (height >> 1), width >> 1,
-                                     width, vertical_mirror ? -height : height);
-    delete[] src_data_i420;
-    return resCode;
-
-}
-
-int yancy::__NV21MirrorToABGR__(const uint8 *src_data, uint8 **dst_data, int width, int height, bool vertical_mirror) {
-
-    if (libyuv::NV21ToARGB(src_data, width,
-                           src_data + width * height, width,
-                           *dst_data, width * 4,
-                           width, vertical_mirror ? -height : height) != 0) {
-        return -1;
-    }
-    uint8 *src_argb = new uint8[width * height * 4];
-    if (libyuv::ARGBMirror(*dst_data, width * 4,
-                           src_argb, width * 4,
-                           width, height) != 0) {
-        delete[] src_argb;
-        return -1;
     }
 
-    int resCode = libyuv::ARGBToABGR(src_argb, width * 4, *dst_data, width * 4, width, height);
-    delete[] src_argb;
-    return resCode;
-}
-
-int yancy::__NV21MirrorToRGB565__(const uint8 *src_data, uint8 **dst_data, int width, int height, bool vertical_mirror) {
-    uint8 *src_data_i420 = new uint8[width * height + ((width + 1) / 2) * ((height + 1) / 2) * 2];
-    if (__NV21MirrorToI420__(src_data, &src_data_i420, width, height, vertical_mirror) != 0) {
-        delete[] src_data_i420;
-        return -1;
-    }
-    int resCode = I420ToRGB565(src_data_i420, width, height, *dst_data);
-    delete[] src_data_i420;
-    return resCode;
-}
-
-int yancy::__I420MirrorToNV21__(const uint8 *src_data, uint8 **dst_data, int width, int height, bool vertical_mirror) {
-    uint8 *i420_data_mirror = new uint8[width * height + ((width + 1) / 2) * ((height + 1) / 2) * 2];
-    if (__I420MirrorToI420__(src_data, &i420_data_mirror, width, height, vertical_mirror) != 0) {
-        delete[] i420_data_mirror;
-        return -1;
-    }
-    int resCode = I420ToNV21(i420_data_mirror, width, height, *dst_data);
-    delete[] i420_data_mirror;
     return resCode;
 }
 
@@ -420,125 +364,6 @@ int yancy::__I420MirrorToI420__(const uint8 *src_data, uint8 **dst_data, int wid
                               *dst_data + width * height, width >> 1,
                               *dst_data + width * height + (width >> 1) * (height >> 1), width >> 1,
                               width, vertical_mirror ? -height : height);
-}
-
-int yancy::__I420MirrorToABGR__(const uint8 *src_data, uint8 **dst_data, int width, int height, bool vertical_mirror) {
-    uint8 *i420_data_mirror = new uint8[width * height + ((width + 1) / 2) * ((height + 1) / 2) * 2];
-    if (__I420MirrorToI420__(src_data, &i420_data_mirror, width, height, vertical_mirror) != 0) {
-        delete[] i420_data_mirror;
-        return -1;
-    }
-    int resCode = I420ToRGBA(i420_data_mirror, width, height, *dst_data);
-    delete[] i420_data_mirror;
-    return resCode;
-}
-
-int yancy::__I420MirrorToRGB565__(const uint8 *src_data, uint8 **dst_data, int width, int height, bool vertical_mirror) {
-    uint8 *i420_data_mirror = new uint8[width * height + ((width + 1) / 2) * ((height + 1) / 2) * 2];
-    if (__I420MirrorToI420__(src_data, &i420_data_mirror, width, height, vertical_mirror) != 0) {
-        delete[] i420_data_mirror;
-        return -1;
-    }
-    int resCode = I420ToRGB565(i420_data_mirror, width, height, *dst_data);
-    delete[] i420_data_mirror;
-    return resCode;
-}
-
-int yancy::__ABGRMirrorToNV21__(const uint8 *src_data, uint8 **dst_data, int width, int height, bool vertical_mirror) {
-    uint8 *i420_data = new uint8[width * height + ((width + 1) / 2) * ((height + 1) / 2) * 2];
-    if (RGBAToI420(src_data, width, height, i420_data) != 0) {
-        delete[] i420_data;
-        return -1;
-    }
-
-    int resCode = __I420MirrorToNV21__(i420_data, dst_data, width, height, vertical_mirror);
-    delete[] i420_data;
-    return resCode;
-}
-
-int yancy::__ABGRMirrorToI420__(const uint8 *src_data, uint8 **dst_data, int width, int height, bool vertical_mirror) {
-    uint8 *i420_data = new uint8[width * height + ((width + 1) / 2) * ((height + 1) / 2) * 2];
-    if (RGBAToI420(src_data, width, height, i420_data) != 0) {
-        delete[] i420_data;
-        return -1;
-    }
-
-    int resCode = __I420MirrorToI420__(i420_data, dst_data, width, height, vertical_mirror);
-    delete[] i420_data;
-    return resCode;
-}
-
-int yancy::__ABGRMirrorToABGR__(const uint8 *src_data, uint8 **dst_data, int width, int height, bool vertical_mirror) {
-    if (libyuv::ABGRToARGB(src_data, width * 4, *dst_data, width * 4, width, height) != 0) {
-        return -1;
-    }
-    uint8 *argb_data = new uint8[width * height * 4];
-    if (libyuv::ARGBMirror(*dst_data, width * 4,
-                           argb_data, width * 4,
-                           width, vertical_mirror ? -height : height) != 0) {
-        delete[] argb_data;
-        return -1;
-    }
-
-    int resCode = libyuv::ARGBToABGR(argb_data, width * 4, *dst_data, width * 4, width, height);
-    delete[] argb_data;
-    return resCode;
-}
-
-int yancy::__ABGRMirrorToRGB565__(const uint8 *src_data, uint8 **dst_data, int width, int height, bool vertical_mirror) {
-    uint8 *i420_data = new uint8[width * height + ((width + 1) / 2) * ((height + 1) / 2) * 2];
-    if (RGBAToI420(src_data, width, height, i420_data) != 0) {
-        delete[] i420_data;
-        return -1;
-    }
-    int resCode = __I420MirrorToRGB565__(i420_data, dst_data, width, height, vertical_mirror);
-    delete[] i420_data;
-
-    return resCode;
-}
-
-int yancy::__RGB565MirrorToNV21__(const uint8 *src_data, uint8 **dst_data, int width, int height, bool vertical_mirror) {
-    uint8 *i420_data = new uint8[width * height + ((width + 1) / 2) * ((height + 1) / 2) * 2];
-    if (RGB565ToI420(src_data, width, height, i420_data) != 0) {
-        delete[] i420_data;
-        return -1;
-    }
-    int resCode = __I420MirrorToNV21__(i420_data, dst_data, width, height, vertical_mirror);
-    delete[] i420_data;
-    return resCode;
-}
-
-int yancy::__RGB565MirrorToI420__(const uint8 *src_data, uint8 **dst_data, int width, int height, bool vertical_mirror) {
-    uint8 *i420_data = new uint8[width * height + ((width + 1) / 2) * ((height + 1) / 2) * 2];
-    if (RGB565ToI420(src_data, width, height, i420_data) != 0) {
-        delete[] i420_data;
-        return -1;
-    }
-    int resCode = __I420MirrorToI420__(i420_data, dst_data, width, height, vertical_mirror);
-    delete[] i420_data;
-    return resCode;
-}
-
-int yancy::__RGB565MirrorToABGR__(const uint8 *src_data, uint8 **dst_data, int width, int height, bool vertical_mirror) {
-    uint8 *i420_data = new uint8[width * height + ((width + 1) / 2) * ((height + 1) / 2) * 2];
-    if (RGB565ToI420(src_data, width, height, i420_data) != 0) {
-        delete[] i420_data;
-        return -1;
-    }
-    int resCode = __I420MirrorToABGR__(i420_data, dst_data, width, height, vertical_mirror);
-    delete[] i420_data;
-    return resCode;
-}
-
-int yancy::__RGB565MirrorToRGB565__(const uint8 *src_data, uint8 **dst_data, int width, int height, bool vertical_mirror) {
-    uint8 *i420_data = new uint8[width * height + ((width + 1) / 2) * ((height + 1) / 2) * 2];
-    if (RGB565ToI420(src_data, width, height, i420_data) != 0) {
-        delete[] i420_data;
-        return -1;
-    }
-    int resCode = __I420MirrorToRGB565__(i420_data, dst_data, width, height, vertical_mirror);
-    delete[] i420_data;
-    return resCode;
 }
 
 int yancy::DataConvert(uint8 *src_data, int src_width, int src_height, int src_data_size,
@@ -565,7 +390,6 @@ int yancy::DataConvert(uint8 *src_data, int src_width, int src_height, int src_d
         delete[] i420_data;
         return resCode;
     }
-
     switch (getFormat(dst_format)) {
         case NV21:
             resCode = I420ToNV21(i420_data, dst_width, dst_height, dst_data);
@@ -814,6 +638,8 @@ yancy::ImageFormat yancy::getFormat(int formatValue) {
             return I420;
         case 3:
             return RGB565;
+        case 4:
+            return RGB24;
         case 5:
             return ARGB_8888;
         default:
@@ -851,6 +677,12 @@ int yancy::getDataSize(int width, int height, int dataFormat) {
             return 0;
     }
 }
+
+
+
+
+
+
 
 
 

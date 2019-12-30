@@ -3,9 +3,8 @@ package com.yancy.yuvutils
 import android.graphics.Bitmap
 import android.graphics.Rect
 import com.yancy.yuvutils.annotation.RotateDegree
-import com.yancy.yuvutils.annotation.SupportFormat
 import com.yancy.yuvutils.entry.FilterMode
-import com.yancy.yuvutils.entry.ImageData
+import com.yancy.yuvutils.entry.ImageInfo
 import com.yancy.yuvutils.entry.ImageFormat
 
 /**
@@ -208,30 +207,30 @@ object ImageUtils {
     }
 
 
-    /************************************ RGB888格式的数据转换操作 ********************************************/
+    /************************************ RGB24【即BGR888】格式的数据转换操作 ********************************************/
 
-    fun rgb24ToNV21(rgb565Data: ByteArray, width: Int, height: Int): ByteArray? {
-        return YuvUtils.imageFormatConvert(rgb565Data, width, height, 4, 1)
+    fun rgb24ToNV21(rgb24Data: ByteArray, width: Int, height: Int): ByteArray? {
+        return YuvUtils.imageFormatConvert(rgb24Data, width, height, 4, 1)
     }
 
-    fun rgb24ToI420(rgb565Data: ByteArray, width: Int, height: Int): ByteArray? {
-        return YuvUtils.imageFormatConvert(rgb565Data, width, height, 4, 2)
+    fun rgb24ToI420(rgb24Data: ByteArray, width: Int, height: Int): ByteArray? {
+        return YuvUtils.imageFormatConvert(rgb24Data, width, height, 4, 2)
     }
 
-    fun rgb24ToRgb565(rgb565Data: ByteArray, width: Int, height: Int): ByteArray? {
-        return YuvUtils.imageFormatConvert(rgb565Data, width, height, 4, 3)
+    fun rgb24ToRgb565(rgb24Data: ByteArray, width: Int, height: Int): ByteArray? {
+        return YuvUtils.imageFormatConvert(rgb24Data, width, height, 4, 3)
     }
 
-    fun rgb24ToRgba(rgb565Data: ByteArray, width: Int, height: Int): ByteArray? {
-        return YuvUtils.imageFormatConvert(rgb565Data, width, height, 4, 5)
+    fun rgb24ToRgba(rgb24Data: ByteArray, width: Int, height: Int): ByteArray? {
+        return YuvUtils.imageFormatConvert(rgb24Data, width, height, 4, 5)
     }
 
-    fun rgb24ToBitmap565(rgb565Data: ByteArray, width: Int, height: Int): Bitmap? {
-        return YuvUtils.imageToBitmap(rgb565Data, width, height, 4, 3)
+    fun rgb24ToBitmap565(rgb24Data: ByteArray, width: Int, height: Int): Bitmap? {
+        return YuvUtils.imageToBitmap(rgb24Data, width, height, 4, 3)
     }
 
-    fun rgb24ToBitmap8888(rgb565Data: ByteArray, width: Int, height: Int): Bitmap? {
-        return YuvUtils.imageToBitmap(rgb565Data, width, height, 4, 5)
+    fun rgb24ToBitmap8888(rgb24Data: ByteArray, width: Int, height: Int): Bitmap? {
+        return YuvUtils.imageToBitmap(rgb24Data, width, height, 4, 5)
     }
 
     fun rgb24Rotate(rgb24Data: ByteArray, width: Int, height: Int, @RotateDegree degree: Int): ByteArray? {
@@ -270,7 +269,7 @@ object ImageUtils {
         )
     }
 
-    fun dataClipRotateToBitmap(imageData: ImageData): Bitmap? {
+    fun dataClipRotateToBitmap(imageData: ImageInfo): Bitmap? {
         imageData.run {
             val config = when (bitmapConfig) {
                 Bitmap.Config.RGB_565 -> 3

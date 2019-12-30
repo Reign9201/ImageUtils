@@ -2,28 +2,16 @@ package com.yancy.imageutils
 
 import android.Manifest
 import android.graphics.*
-import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import com.yancy.yuvutils.entry.ImageData
-import com.yancy.yuvutils.entry.ImageFormat
+import com.yancy.imageutils.test.Test
 import com.yancy.yuvutils.ImageUtils
+import com.yancy.yuvutils.YuvUtils
 import kotlinx.android.synthetic.main.activity_main.*
+import java.nio.ByteBuffer
+import java.nio.IntBuffer
 
 class MainActivity : AppCompatActivity() {
-
-    fun bitmapToARGB(bitmap: Bitmap?): IntArray? {
-        if (bitmap != null) {
-            val width = bitmap.width
-            val height = bitmap.height
-            val argb = IntArray(width * height)
-            bitmap.getPixels(argb, 0, width, 0, 0, width, height)
-
-            return argb
-        }
-        return null
-    }
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -36,501 +24,94 @@ class MainActivity : AppCompatActivity() {
         )
             .request(this)
 
-
-        LogUtils.e("========================== value = ${Bitmap.Config.valueOf(Bitmap.Config.ARGB_8888.name)}")
-
-//        val bitmap = BitmapFactory.decodeFile("/sdcard/bg04.jpg")
         val bitmap = BitmapFactory.decodeFile("/sdcard/test.png")
         val width = bitmap.width
         val height = bitmap.height
+        if (bitmap == null) {
+            LogUtils.e("bitmap is null.")
+            return
+        }
+        LogUtils.d("width = $width, height = $height")
 
-        //imageView.setImageBitmap(bitmap)
+//        test()
 
-        LogUtils.e("width = $width, height = $height")
-        val bitmapToNV21 = ImageUtils.bitmapToNV21(bitmap)
-
-        val bitmapToRgb = ImageUtils.bitmapToRgb565(bitmap)
-        val bitmapToI420 = ImageUtils.bitmapToI420(bitmap)
-
-
-
-
-
-
-        /*  ImageUtils.nv21ToBitmap8888(bitmapToNV21!!,width,height)?.apply {
-              imageView.setImageBitmap(this)
-          }
-  */
-
-
-        /*bitmapToI420?.apply {
-            val dataMirror = ImageUtils.dataMirror(this, width, height, 2, 1)
-            dataMirror?.apply {
-//                val bitmap8888 = ImageUtils.rgbaToBitmap8888(this, width, height)
-//                val bitmap8888 = ImageUtils.i420ToBitmap8888(this, width, height)
-                val bitmap8888 = ImageUtils.nv21ToBitmap8888(this, width, height)
-                bitmap8888?.apply {
-                    imageView.setImageBitmap(this)
-                }?:LogUtils.e("图片生成失败")
-            }?:LogUtils.e("镜像翻转失败")
-        }?:LogUtils.e("生成 NV21 格式数据失败")*/
-
-
-//        val bitmapToRgba = ImageUtils.bitmapToRgba(bitmap)
-        /*bitmapToRgb?.apply {
-
-            val multiMixDataToBitmap = ImageUtils.multiMixDataToBitmap(
-                ImageData(
-                    this,
-                    ImageFormat.RGB_565,
-                    width,
-                    height, 0,
-//                    rect = Rect(0, 0, 150, 150),
-//                    rect = Rect(0, 116, 300, 300+116),
-                    priorityClip = false
-                )
-            )
-            dataClipRotateToBitmap?.apply {
-                imageView.setImageBitmap(this)
-                LogUtils.e("format --->${this.config}")
-            } ?: LogUtils.e("~~~~~~~~~~~~~~~~~~~~~")
-        } ?: LogUtils.e("出故障了")*/
-
-
-//        nv21Convert(bitmap, width, height)
-//        i420Convert(bitmap, width, height)
         //rgbaConvert(bitmap, width, height)
-
-//        rgbConvert(bitmap, width, height)
+        rgb24Convert(bitmap, width, height)
     }
 
 
-    private fun rgbConvert(bitmap: Bitmap, width: Int, height: Int) {
-        LogUtils.e("config = ${bitmap.config}")
-        val bitmapToRgb = ImageUtils.bitmapToRgb565(bitmap)
-        if (bitmapToRgb == null) {
-            LogUtils.e("Bitmap 转 RGB 失败")
-            return
-        }
+    private fun test() {
 
+        val bitmap = Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888)
+        bitmap.eraseColor(Color.parseColor("#336699"))
+        // imageView.setImageBitmap(bitmap)
+        val rgba = IntArray(1 * 1)
+        bitmap.getPixels(rgba, 0, 1, 0, 0, 1, 1)
 
-        LogUtils.e("bitmapToRgb.size = ${bitmapToRgb.size}")
-        /**************************************************************************************/
-        val rgbToBitmap8888 = ImageUtils.rgb565ToBitmap8888(bitmapToRgb, width, height)
-        if (rgbToBitmap8888 == null) {
-            LogUtils.e("RGB 转 Bitmap8888 失败")
-            return
-        }
-        LogUtils.w("rgbToBitmap8888 format = " + rgbToBitmap8888.config)
-        //imageView.setImageBitmap(rgbToBitmap8888)
+        LogUtils.e("rgba = ${Test.convert01(rgba[0])}")
+        val byteArray = ByteArray(1 * 1 * 4)
+        val byteBuffer = ByteBuffer.wrap(byteArray)
+        bitmap.copyPixelsToBuffer(byteBuffer)
 
-        /**************************************************************************************/
-        val rgbToBitmap565 = ImageUtils.rgb565ToBitmap565(bitmapToRgb, width, height)
-        if (rgbToBitmap565 == null) {
-            LogUtils.e("RGBA 转 Bitmap565 失败")
-            return
-        }
-        LogUtils.w("rgbToBitmap565 format = " + rgbToBitmap565.config)
-        //imageView.setImageBitmap(rgbToBitmap565)
-
-        /**************************************************************************************/
-
-        val rgbToNV21 = ImageUtils.rgb565ToNV21(bitmapToRgb, width, height)
-        if (rgbToNV21 == null) {
-            LogUtils.e("RGBA 转 NV21失败")
-            return
-        }
-
-        /**************************************************************************************/
-        val nv21ToBitmap8888 = ImageUtils.nv21ToBitmap8888(rgbToNV21, width, height)
-        if (nv21ToBitmap8888 == null) {
-            LogUtils.e("NV21 转 Bitmap8888 失败")
-            return
-        }
-        LogUtils.d("nv21ToBitmap8888 format = ${nv21ToBitmap8888.config}")
-        // imageView.setImageBitmap(nv21ToBitmap8888)
-
-        /**************************************************************************************/
-        val nv21ToBitmap565 = ImageUtils.nv21ToBitmap565(rgbToNV21, width, height)
-        if (nv21ToBitmap565 == null) {
-            LogUtils.e("NV21 转 Bitmap565 失败")
-            return
-        }
-        LogUtils.d("nv21ToBitmap565 format = ${nv21ToBitmap565.config}")
-        // imageView.setImageBitmap(nv21ToBitmap565)
-
-
-        val bitmap565ToI420 = ImageUtils.bitmapToI420(nv21ToBitmap565)
-
-
-        /****************************************************************************************/
-        // TODO 转换有问题
-        val rgbToI420 = ImageUtils.rgb565ToI420(bitmapToRgb, width, height)
-        if (rgbToI420 == null) {
-            LogUtils.e("RGB 转 I420 失败")
-            return
-        }
-
-
-        /**************************************************************************************/
-        val i420ToBitmap8888 = ImageUtils.i420ToBitmap8888(rgbToI420, width, height)
-        if (i420ToBitmap8888 == null) {
-            LogUtils.e("I420 转 Bitmap8888 失败")
-            return
-        }
-        LogUtils.d("i420ToBitmap8888 format = ${i420ToBitmap8888.config}")
-        imageView.setImageBitmap(i420ToBitmap8888)
-
-        /**************************************************************************************/
-        val i420ToBitmap565 = ImageUtils.i420ToBitmap565(rgbToI420, width, height)
-        if (i420ToBitmap565 == null) {
-            LogUtils.e("I420 转 Bitmap565 失败")
-            return
-        }
-        LogUtils.d("i420ToBitmap565 format = ${i420ToBitmap565.config}")
-
-        //imageView.setImageBitmap(i420ToBitmap565)
-
-        /****************************************************************************************/
-        val rgbToRgba = ImageUtils.rgb565ToRgba(bitmapToRgb, width, height)
-        if (rgbToRgba == null) {
-            LogUtils.e("RGB 转 RGBA 失败")
-            return
-        }
-        //LogUtils.e("==================${rgbToRgba.size}")
-
-        /****************************************************************************************/
-        val rgbaToBitmap8888 = ImageUtils.rgbaToBitmap8888(rgbToRgba, width, height)
-        if (rgbaToBitmap8888 == null) {
-            LogUtils.e("RGBA 转 Bitmap8888 失败")
-            return
-        }
-        LogUtils.d("rgbaToBitmap8888 format = ${rgbaToBitmap8888.config}")
-
-        //imageView.setImageBitmap(rgbaToBitmap8888)
-
-        /****************************************************************************************/
-        val rgbaToBitmap565 = ImageUtils.rgbaToBitmap565(rgbToRgba, width, height)
-        if (rgbaToBitmap565 == null) {
-            LogUtils.e("RGBA 转 Bitmap565 失败")
-            return
-        }
-        LogUtils.d("rgbaToBitmap565 format = ${rgbaToBitmap565.config}")
-        //imageView.setImageBitmap(rgbaToBitmap565)
+        LogUtils.e(Test.convert(byteArray[0]))
+        LogUtils.e(Test.convert(byteArray[1]))
+        LogUtils.e(Test.convert(byteArray[2]))
+        LogUtils.e(Test.convert(byteArray[3]))
     }
+
+
+    private fun rgb24Convert(bitmap: Bitmap, width: Int, height: Int) {
+
+        ImageUtils.apply {
+            val rgb24Bytes = bitmapToRgb24(bitmap)
+            //val rgb24Clip = rgb24Clip(rgb24Bytes!!, width, height, Rect(100, 100, 300, 300))
+            //imageView.setImageBitmap(rgb24ToBitmap8888(rgb24Clip!!,200,200))
+
+            val rgb24Scale = rgb24Scale(rgb24Bytes!!, width, height, 800, 800)
+            imageView.setImageBitmap(rgb24ToBitmap8888(rgb24Scale!!,800,800))
+
+            imageView.setImageBitmap(rgb24ToBitmap565(rgb24Rotate(rgb24Bytes, width, height, 90)!!,height,width))
+
+            imageView.setImageBitmap(rgb24ToBitmap565(rgb24Mirror(rgb24Bytes,width,height)!!,width, height))
+
+            imageView.setImageBitmap(i420ToBitmap8888(rgb24ToI420(rgb24Bytes,width, height)!!,width, height))
+            imageView.setImageBitmap(nv21ToBitmap8888(rgb24ToNV21(rgb24Bytes,width, height)!!,width, height))
+            imageView.setImageBitmap(rgbaToBitmap8888(rgb24ToRgba(rgb24Bytes,width, height)!!,width, height))
+            imageView.setImageBitmap(rgb565ToBitmap8888(rgb24ToRgb565(rgb24Bytes,width, height)!!,width, height))
+        }
+
+
+    }
+
 
     private fun rgbaConvert(bitmap: Bitmap, width: Int, height: Int) {
-        LogUtils.e("config = ${bitmap.config}")
-        val bitmapToRgba = ImageUtils.bitmapToRgba(bitmap)
-        if (bitmapToRgba == null) {
-            LogUtils.e("Bitmap 转 RGBA 失败")
-            return
+        //提取Bitmap数据
+        val rgbaBytes = ByteArray(width * height * 4)
+        val dst = ByteBuffer.wrap(rgbaBytes)
+        bitmap.copyPixelsToBuffer(dst)
+
+        ImageUtils.apply {
+            //imageView.setImageBitmap(rgbaToBitmap8888(rgbaBytes,width,height))
+            //imageView.setImageBitmap(rgbaToBitmap565(rgbaBytes,width,height))
+
+            val i420Bytes = rgbaToI420(rgbaBytes, width, height)
+            //imageView.setImageBitmap(i420ToBitmap8888(i420Bytes!!,width,height))
+            //imageView.setImageBitmap(i420ToBitmap565(i420Bytes!!,width,height))
+
+            val nv21Bytes = rgbaToNV21(rgbaBytes, width, height)
+            //imageView.setImageBitmap(nv21ToBitmap8888(nv21Bytes!!,width,height))
+            //imageView.setImageBitmap(nv21ToBitmap565(nv21Bytes!!,width,height))
+
+            val rgb24Bytes = rgbaToRgb24(rgbaBytes, width, height)
+            //imageView.setImageBitmap(rgb24ToBitmap8888(rgb24Bytes!!,width,height))
+            //imageView.setImageBitmap(rgb24ToBitmap565(rgb24Bytes!!,width,height))
+
+            val rgb565Bytes = rgbaToRgb565(rgbaBytes, width, height)
+            //imageView.setImageBitmap(rgb565ToBitmap8888(rgb565Bytes!!,width,height))
+            imageView.setImageBitmap(rgb565ToBitmap565(rgb565Bytes!!,width,height))
         }
-        LogUtils.e("bitmapToRgba.size = ${bitmapToRgba.size}")
-
-
-        /****************************************************************************************/
-        val rgbaToBitmap8888 = ImageUtils.rgbaToBitmap8888(bitmapToRgba, width, height)
-        if (rgbaToBitmap8888 == null) {
-            LogUtils.e("RGBA 转 Bitmap8888 失败")
-            return
-        }
-        LogUtils.w("rgbaToBitmap8888 format = " + rgbaToBitmap8888.config)
-        // imageView.setImageBitmap(rgbaToBitmap8888)
-
-        /****************************************************************************************/
-        val rgbaToBitmap565 = ImageUtils.rgbaToBitmap565(bitmapToRgba, width, height)
-        if (rgbaToBitmap565 == null) {
-            LogUtils.e("RGBA 转 Bitmap565 失败")
-            return
-        }
-        LogUtils.w("rgbaToBitmap565 format = " + rgbaToBitmap565.config)
-        imageView.setImageBitmap(rgbaToBitmap565)
-
-        /****************************************************************************************/
-
-        val rgbaToNV21 = ImageUtils.rgbaToNV21(bitmapToRgba, width, height)
-        if (rgbaToNV21 == null) {
-            LogUtils.e("RGBA 转 NV21失败")
-            return
-        }
-
-        /****************************************************************************************/
-        val nv21ToBitmap8888 = ImageUtils.nv21ToBitmap8888(rgbaToNV21, width, height)
-        if (nv21ToBitmap8888 == null) {
-            LogUtils.e("NV21 转 Bitmap8888 失败")
-            return
-        }
-        LogUtils.d("nv21ToBitmap8888 format = ${nv21ToBitmap8888.config}")
-        // imageView.setImageBitmap(nv21ToBitmap8888)
-
-        /****************************************************************************************/
-        val nv21ToBitmap565 = ImageUtils.nv21ToBitmap565(rgbaToNV21, width, height)
-        if (nv21ToBitmap565 == null) {
-            LogUtils.e("NV21 转 Bitmap565 失败")
-            return
-        }
-        LogUtils.d("nv21ToBitmap565 format = ${nv21ToBitmap565.config}")
-        //imageView.setImageBitmap(nv21ToBitmap565)
-
-        /****************************************************************************************/
-        val rgbaToI420 = ImageUtils.rgbaToI420(bitmapToRgba, width, height)
-        if (rgbaToI420 == null) {
-            LogUtils.e("RGBA 转 I420 失败")
-            return
-        }
-
-        /****************************************************************************************/
-        val i420ToBitmap8888 = ImageUtils.i420ToBitmap8888(rgbaToI420, width, height)
-        if (i420ToBitmap8888 == null) {
-            LogUtils.e("I420 转 Bitmap8888 失败")
-            return
-        }
-        LogUtils.d("i420ToBitmap8888 format = ${i420ToBitmap8888.config}")
-        // imageView.setImageBitmap(i420ToBitmap8888)
-
-        /****************************************************************************************/
-        val i420ToBitmap565 = ImageUtils.i420ToBitmap565(rgbaToI420, width, height)
-        if (i420ToBitmap565 == null) {
-            LogUtils.e("I420 转 Bitmap565 失败")
-            return
-        }
-        LogUtils.d("i420ToBitmap565 format = ${i420ToBitmap565.config}")
-
-        // imageView.setImageBitmap(i420ToBitmap565)
-
-        /****************************************************************************************/
-        val rgbaToRgb = ImageUtils.rgbaToRgb565(bitmapToRgba, width, height)
-        if (rgbaToRgb == null) {
-            LogUtils.e("RGBA 转 RGB 失败")
-            return
-        }
-
-        /****************************************************************************************/
-        val rgbToBitmap8888 = ImageUtils.rgb565ToBitmap8888(rgbaToRgb, width, height)
-        if (rgbToBitmap8888 == null) {
-            LogUtils.e("RGB 转 Bitmap8888 失败")
-            return
-        }
-        LogUtils.d("rgbToBitmap8888 format = ${rgbToBitmap8888.config}")
-
-        // imageView.setImageBitmap(rgbToBitmap8888)
-
-        /****************************************************************************************/
-        val rgbToBitmap565 = ImageUtils.rgb565ToBitmap565(rgbaToRgb, width, height)
-        if (rgbToBitmap565 == null) {
-            LogUtils.e("RGB 转 Bitmap565 失败")
-            return
-        }
-        LogUtils.d("rgbToBitmap565 format = ${rgbToBitmap565.config}")
-        //imageView.setImageBitmap(rgbToBitmap565)
-    }
-
-    private fun i420Convert(bitmap: Bitmap, width: Int, height: Int) {
-        val bitmapToI420 = ImageUtils.bitmapToI420(bitmap)
-        if (bitmapToI420 == null) {
-            LogUtils.e("Bitmap 转 I420 失败")
-            return
-        }
-        /****************************************************************************************/
-        val i420ToBitmap8888 = ImageUtils.i420ToBitmap8888(bitmapToI420, width, height)
-        if (i420ToBitmap8888 == null) {
-            LogUtils.e("I420 转 Bitmap8888 失败")
-            return
-        }
-        LogUtils.w("i420ToBitmap8888 format = " + i420ToBitmap8888.config)
-        //imageView.setImageBitmap(i420ToBitmap8888)
-
-        /****************************************************************************************/
-        val i420ToBitmap565 = ImageUtils.i420ToBitmap565(bitmapToI420, width, height)
-        if (i420ToBitmap565 == null) {
-            LogUtils.e("I420 转 Bitmap565 失败")
-            return
-        }
-        LogUtils.w("i420ToBitmap565 format = " + i420ToBitmap565.config)
-        //imageView.setImageBitmap(i420ToBitmap565)
-
-        /****************************************************************************************/
-        val i420ToNV21 = ImageUtils.i420ToNV21(bitmapToI420, width, height)
-        if (i420ToNV21 == null) {
-            LogUtils.e("I420 转 NV21失败")
-            return
-        }
-
-        /****************************************************************************************/
-        val nv21ToBitmap8888 = ImageUtils.nv21ToBitmap8888(i420ToNV21, width, height)
-        if (nv21ToBitmap8888 == null) {
-            LogUtils.e("NV21 转 Bitmap8888 失败")
-            return
-        }
-        LogUtils.d("nv21ToBitmap8888 format = ${nv21ToBitmap8888.config}")
-        //imageView.setImageBitmap(nv21ToBitmap8888)
-
-        /****************************************************************************************/
-        val nv21ToBitmap565 = ImageUtils.nv21ToBitmap565(i420ToNV21, width, height)
-        if (nv21ToBitmap565 == null) {
-            LogUtils.e("NV21 转 Bitmap8888 失败")
-            return
-        }
-        LogUtils.d("nv21ToBitmap565 format = ${nv21ToBitmap565.config}")
-        //imageView.setImageBitmap(nv21ToBitmap565)
-
-        /****************************************************************************************/
-        val i420ToRgba = ImageUtils.i420ToRgba(bitmapToI420, width, height)
-        if (i420ToRgba == null) {
-            LogUtils.e("I420 转 RGBA失败")
-            return
-        }
-
-        /****************************************************************************************/
-        val rgbaToBitmap8888 = ImageUtils.rgbaToBitmap8888(i420ToRgba, width, height)
-        if (rgbaToBitmap8888 == null) {
-            LogUtils.e("RGBA 转 Bitmap8888 失败")
-            return
-        }
-        LogUtils.d("rgbaToBitmap8888 format = ${rgbaToBitmap8888.config}")
-        //imageView.setImageBitmap(rgbaToBitmap8888)
-
-        /****************************************************************************************/
-        val rgbaToBitmap565 = ImageUtils.rgbaToBitmap565(i420ToRgba, width, height)
-        if (rgbaToBitmap565 == null) {
-            LogUtils.e("RGBA 转 Bitmap8888 失败")
-            return
-        }
-        LogUtils.d("rgbaToBitmap565 format = ${rgbaToBitmap565.config}")
-        // imageView.setImageBitmap(rgbaToBitmap565)
-
-        /****************************************************************************************/
-        val i420ToRgb = ImageUtils.i420ToRgb565(bitmapToI420, width, height)
-        if (i420ToRgb == null) {
-            LogUtils.e("I420 转 RGB失败")
-            return
-        }
-
-        /****************************************************************************************/
-        val rgbToBitmap8888 = ImageUtils.rgb565ToBitmap8888(i420ToRgb, width, height)
-        if (rgbToBitmap8888 == null) {
-            LogUtils.e("RGBA 转 Bitmap8888 失败")
-            return
-        }
-        LogUtils.d("rgbToBitmap8888 format = ${rgbToBitmap8888.config}")
-        //imageView.setImageBitmap(rgbToBitmap8888)
-
-        /****************************************************************************************/
-        val rgbToBitmap565 = ImageUtils.rgb565ToBitmap565(i420ToRgb, width, height)
-        if (rgbToBitmap565 == null) {
-            LogUtils.e("RGBA 转 Bitmap8888 失败")
-            return
-        }
-        LogUtils.d("rgbToBitmap565 format = ${rgbToBitmap565.config}")
-        //imageView.setImageBitmap(rgbToBitmap565)
-    }
-
-    private fun nv21Convert(bitmap: Bitmap, width: Int, height: Int) {
-        val bitmapToNV21 = ImageUtils.bitmapToNV21(bitmap)
-        if (bitmapToNV21 == null) {
-            LogUtils.e("Bitmap 转 NV21 失败")
-            return
-        }
-
-        /****************************************************************************************/
-        val nv21ToBitmap565 = ImageUtils.nv21ToBitmap565(bitmapToNV21, width, height)
-        if (nv21ToBitmap565 == null) {
-            LogUtils.e("NV21 转 Bitmap565 失败")
-            return
-        }
-        LogUtils.w("nv21ToBitmap565 format = " + nv21ToBitmap565.config)
-        //imageView.setImageBitmap(nv21ToBitmap565)
-
-        /****************************************************************************************/
-        val nv21ToBitmap8888 = ImageUtils.nv21ToBitmap8888(bitmapToNV21, width, height)
-        if (nv21ToBitmap8888 == null) {
-            LogUtils.e("NV21 转 Bitmap8888 失败")
-            return
-        }
-        LogUtils.w("nv21ToBitmap8888 format = " + nv21ToBitmap8888.config)
-        //imageView.setImageBitmap(nv21ToBitmap8888)
-
-        /****************************************************************************************/
-        val nv21ToI420 = ImageUtils.nv21ToI420(bitmapToNV21, width, height)
-        if (nv21ToI420 == null) {
-            LogUtils.e("NV21 转 I420 失败")
-            return
-        }
-
-        /****************************************************************************************/
-        val i420ToBitmap8888 = ImageUtils.i420ToBitmap8888(nv21ToI420, width, height)
-        if (i420ToBitmap8888 == null) {
-            LogUtils.e("I420 转 Bitmap8888 失败")
-            return
-        }
-        LogUtils.w("i420ToBitmap8888 format = " + i420ToBitmap8888.config)
-        //imageView.setImageBitmap(i420ToBitmap8888)
-
-        /****************************************************************************************/
-        val i420ToBitmap565 = ImageUtils.i420ToBitmap565(nv21ToI420, width, height)
-        if (i420ToBitmap565 == null) {
-            LogUtils.e("I420 转 Bitmap565 失败")
-            return
-        }
-        LogUtils.w("i420ToBitmap565 format = " + i420ToBitmap565.config)
-        //imageView.setImageBitmap(i420ToBitmap565)
-
-        /****************************************************************************************/
-        val nv21ToRgb = ImageUtils.nv21ToRgb565(bitmapToNV21, width, height)
-        if (nv21ToRgb == null) {
-            LogUtils.e("NV21 转 RGB 失败")
-            return
-        }
-
-        /****************************************************************************************/
-        val rgbToBitmap565 = ImageUtils.rgb565ToBitmap565(nv21ToRgb, width, height)
-        if (rgbToBitmap565 == null) {
-            LogUtils.e("RGB 转 Bitmap565 失败")
-            return
-        }
-        LogUtils.d("rgbToBitmap565 format = " + rgbToBitmap565.config)
-        // imageView.setImageBitmap(rgbToBitmap565)
-
-        /****************************************************************************************/
-        val rgbToBitmap8888 = ImageUtils.rgb565ToBitmap8888(nv21ToRgb, width, height)
-        if (rgbToBitmap8888 == null) {
-            LogUtils.e("RGB 转 Bitmap8888 失败")
-            return
-        }
-        LogUtils.d("rgbToBitmap8888 format = " + rgbToBitmap8888.config)
-        //  imageView.setImageBitmap(rgbToBitmap8888)
-
-        /****************************************************************************************/
-        val nv21ToRgba = ImageUtils.nv21ToRgba(bitmapToNV21, width, height)
-        if (nv21ToRgba == null) {
-            LogUtils.e("NV21 转 RGBA 失败")
-            return
-        }
-
-
-        /****************************************************************************************/
-        val rgbaToBitmap8888 = ImageUtils.rgbaToBitmap8888(nv21ToRgba, width, height)
-        if (rgbaToBitmap8888 == null) {
-            LogUtils.e("RGBA 转 Bitmap8888 失败")
-            return
-        }
-        LogUtils.d("rgbaToBitmap8888 format = " + rgbaToBitmap8888.config)
-        // imageView.setImageBitmap(rgbaToBitmap8888)
-
-        /****************************************************************************************/
-        val rgbaToBitmap565 = ImageUtils.rgbaToBitmap565(nv21ToRgba, width, height)
-        if (rgbaToBitmap565 == null) {
-            LogUtils.e("RGBA 转 Bitmap8888 失败")
-            return
-        }
-        LogUtils.d("rgbaToBitmap565 format = " + rgbaToBitmap565.config)
-        //imageView.setImageBitmap(rgbaToBitmap565)
-    }
-
-    override fun onResume() {
-        super.onResume()
 
 
     }
+
 }
