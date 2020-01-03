@@ -1,5 +1,5 @@
 # Android中常用图像格式说明
-[toc]
+
 
 ### 前言
   > 此篇文章针对 `Android` 中图像处理工具  **ImageUtils** 的解释篇，有兴趣的童鞋可以 [点击此处](https://github.com/Reign9201/ImageUtils) 了解这款开源工具。
