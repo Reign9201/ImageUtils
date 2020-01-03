@@ -96,7 +96,7 @@ object YuvUtils {
         @RotateDegree degree: Int,
         rect: Rect?,
         targetFormat: Int,
-        priorityClip: Boolean
+        priorityClip: Boolean = false
     ): ByteArray?
 
     /**
@@ -119,7 +119,7 @@ object YuvUtils {
         @RotateDegree degree: Int,
         rect: Rect?,
         bitmapConfig: Int,
-        priorityClip: Boolean
+        priorityClip: Boolean = false
     ): Bitmap?
 
     /**

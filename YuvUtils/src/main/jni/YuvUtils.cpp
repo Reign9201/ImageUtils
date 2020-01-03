@@ -2,8 +2,6 @@
 #include "YuvUtils.h"
 #include "head/cppToJavaHelper.hpp"
 #include <string.h>
-#include <libyuv.h>
-#include <libyuv/rotate.h>
 
 static JNINativeMethod gMethods[] = {
         // Bitmap 转换成其他格式
@@ -698,7 +696,6 @@ __ImageToBitmap__(JNIEnv *env, jbyteArray dataArray, jint width, jint height, ji
 }
 
 
-// TODO: 尝试用template inline 解决
 template<typename Func>
 jbyteArray
 createColorBytes(JNIEnv *env, jbyteArray data, jbyte *src_data,

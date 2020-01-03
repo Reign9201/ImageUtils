@@ -46,7 +46,7 @@ class MainActivity : AppCompatActivity() {
                 Rect(100, 0, 300, 300), 5, false
             )*/
 
-        val dataMirror = YuvUtils.dataMirror(rgba!!, width, height, 5, 5,true)
+        val dataMirror = YuvUtils.dataMirror(rgba!!, width, height, 5, 5, true)
         val bitmap8888 = ImageUtils.rgbaToBitmap8888(dataMirror!!, width, height)
 
         imageView.setImageBitmap(bitmap8888)
@@ -126,6 +126,14 @@ class MainActivity : AppCompatActivity() {
             imageView.setImageBitmap(rgb565ToBitmap565(rgb565Bytes!!, width, height))
         }
 
+
+    }
+
+    fun onPreviewFrame(data: ByteArray, width: Int, height: Int) {
+        ImageUtils.nv21ToBitmap8888(data,width, height)
+
+        //我们还可以用二次封装的调用
+        ImageUtils.nv21ToBitmap8888(data, width, height)
 
     }
 
