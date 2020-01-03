@@ -130,10 +130,11 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun onPreviewFrame(data: ByteArray, width: Int, height: Int) {
-        ImageUtils.nv21ToBitmap8888(data,width, height)
+        val bitmap:Bitmap? = ImageUtils.nv21ToBitmap8888(data, width, height, 270)
 
         //我们还可以用二次封装的调用
         ImageUtils.nv21ToBitmap8888(data, width, height)
+
 
     }
 

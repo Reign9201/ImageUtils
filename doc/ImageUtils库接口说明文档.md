@@ -1,5 +1,6 @@
 # ImageUtils库接口说明文档
 
+
 ---
 
 ## 写在前面
@@ -18,7 +19,7 @@ enum class ImageFormat(var format: Int) {
     ARGB_8888(5)
 }
 ```
-关于以上数据格式详细说明，请参见：[Android中常用图像格式说明](https://github.com/Reign9201/ImageUtils/blob/master/doc/Android%E4%B8%AD%E5%B8%B8%E7%94%A8%E5%9B%BE%E5%83%8F%E6%A0%BC%E5%BC%8F%E8%AF%B4%E6%98%8E.md)
+关于以上数据格式详细说明，请参见：[TODO记得补充]()
 
 ---
 
@@ -61,6 +62,8 @@ class ImageInfo(
 
 ---
 ## YuvUtils类
+此类为该库的核心类
+
 ### 2.1 Bitmap转换成其他图像格式
 主要有5个接口：
 
@@ -222,3 +225,43 @@ external fun dataScale(
 - `dstHeight`：目标图像的高
 - `dataFormat`：源图像格式，支持的图像格式，可参见 `ImageFormat` 枚举类
 - `targetFormat`：需要转换成的图像格式，支持的图像格式，可参见 `ImageFormat` 枚举类
+
+---
+
+## ImageUtils
+ImageUtils 该类是对 YuvUtils 类的二次包装，以每种图像格式进行操作，方便外界更便捷的调用。
+
+### NV21 格式图像操作
+关于 `NV21` 格式的图像相关操作方法如下：
+方法 | 方法说明
+--- | ---
+`nv21ToI420`       | `NV21` 格式图像数据转换成 `I420` 格式的数据
+`nv21ToRgb565`     | `NV21` 格式图像数据转换成 `RGB_565` 格式的数据
+`nv21ToRgb24`      | `NV21` 格式图像数据转换成 `RGB24` 格式的数据
+`nv21ToRgba`       | `NV21` 格式图像数据转换成 `ARGB_8888` 格式的数据
+`nv21ToBitmap8888` | `NV21` 格式图像数据转换成 `ARGB_8888` 格式的 `Bitmap`
+`nv21ToBitmap565`  | `NV21` 格式图像数据转换成 `RGB_565` 格式的 `Bitmap`
+`nv21Rotate`       | `NV21` 格式图像数据旋转操作
+`nv21Clip`         | `NV21` 格式图像数据裁剪操作
+`nv21Mirror`       | `NV21` 格式图像数据水平镜像操作
+`nv21Scale`        | `NV21` 格式图像数据缩放操作
+`bitmapToNV21`     | 将 `Bitmap` 转换成 `NV21` 格式数据
+
+
+### I420 格式图像操作
+关于 `I420` 格式的图像相关操作方法如下：
+方法 | 方法说明
+--- | ---
+`i420ToNV21`       | `I420` 格式图像数据转换成 `NV21` 格式的数据
+`i420ToRgb565`     | `I420` 格式图像数据转换成 `RGB_565` 格式的数据
+`i420ToRgb24`      | `I420` 格式图像数据转换成 `RGB24` 格式的数据
+`i420ToRgba`       | `I420` 格式图像数据转换成 `ARGB_8888` 格式的数据
+`i420ToBitmap8888` | `I420` 格式图像数据转换成 `ARGB_8888` 格式的 `Bitmap`
+`i420ToBitmap565`  | `I420` 格式图像数据转换成 `RGB_565` 格式的 `Bitmap`
+`i420Rotate`       | `I420` 格式图像数据旋转操作
+`i420Clip`         | `I420` 格式图像数据裁剪操作
+`i420Mirror`       | `I420` 格式图像数据水平镜像操作
+`i420Scale`        | `I420` 格式图像数据缩放操作
+`bitmapToI420`     | 将 `Bitmap` 转换成 `I420` 格式数据
+
+`RGB24`、`RGB_565` 以及 `ARGB_8888` 这三种格式的数据操作跟上面的相关接口方法类似，这里不一一展示了；另外存在的一些接口均为对YuvUtils接口的包装，基本操作都类似，不再说明。
