@@ -543,7 +543,7 @@ int convertDataHandle(JNIEnv *env, jint dataFormat,
             if (degree == 90) {
                 convertData->crop_x = top;
                 convertData->crop_y = height - right;
-                if (right > convertData->targetHeight || bottom > convertData->targetWidth
+                if (right > height || bottom > width
                     || convertData->crop_x > convertData->targetWidth || convertData->crop_y > convertData->targetHeight) {
                     logger::error(
                             "rect width or height more than rotated image width or height, please check it.");
@@ -555,7 +555,7 @@ int convertDataHandle(JNIEnv *env, jint dataFormat,
             } else if (degree == -90 || degree == 270) {
                 convertData->crop_x = width - bottom;
                 convertData->crop_y = left;
-                if (right > convertData->targetHeight || bottom > convertData->targetWidth
+                if (right > height || bottom > width
                     || convertData->crop_x > convertData->targetWidth || convertData->crop_y > convertData->targetHeight) {
                     logger::error(
                             "rect width or height more than rotated image width or height, please check it.");

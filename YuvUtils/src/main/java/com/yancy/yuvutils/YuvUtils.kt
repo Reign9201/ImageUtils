@@ -86,7 +86,7 @@ object YuvUtils {
      * @param rect         裁剪矩形，可为 null
      * @param targetFormat 生成的图像格式，可参考 {@link ImageInfo # ImageFormat}
      * @param priorityClip 是否优先支持裁剪操作，true 是。
-     *                     需要注意的是，是先裁剪在旋转和先旋转再裁剪是两种不同的操作
+     *                     需要注意的是，先裁剪再旋转和先旋转再裁剪是两种不同的操作
      */
     external fun dataClipRotate(
         data: ByteArray,

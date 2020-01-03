@@ -36,7 +36,22 @@ class MainActivity : AppCompatActivity() {
 //        test()
 
         //rgbaConvert(bitmap, width, height)
-        rgb24Convert(bitmap, width, height)
+        //rgb24Convert(bitmap, width, height)
+
+        val rgba = ImageUtils.bitmapToRgba(bitmap)
+
+        /*val rotateToBitmap =
+            YuvUtils.dataClipRotateToBitmap(
+                rgba!!, 5, width, height, 90,
+                Rect(100, 0, 300, 300), 5, false
+            )*/
+
+        val dataMirror = YuvUtils.dataMirror(rgba!!, width, height, 5, 5,true)
+        val bitmap8888 = ImageUtils.rgbaToBitmap8888(dataMirror!!, width, height)
+
+        imageView.setImageBitmap(bitmap8888)
+        Test.saveBitmapToPNG(bitmap8888, "sdcard/ABCD/", "" + System.nanoTime())
+
     }
 
 
@@ -68,16 +83,16 @@ class MainActivity : AppCompatActivity() {
             //imageView.setImageBitmap(rgb24ToBitmap8888(rgb24Clip!!,200,200))
 
             val rgb24Scale = rgb24Scale(rgb24Bytes!!, width, height, 800, 800)
-            imageView.setImageBitmap(rgb24ToBitmap8888(rgb24Scale!!,800,800))
+            imageView.setImageBitmap(rgb24ToBitmap8888(rgb24Scale!!, 800, 800))
 
-            imageView.setImageBitmap(rgb24ToBitmap565(rgb24Rotate(rgb24Bytes, width, height, 90)!!,height,width))
+            imageView.setImageBitmap(rgb24ToBitmap565(rgb24Rotate(rgb24Bytes, width, height, 90)!!, height, width))
 
-            imageView.setImageBitmap(rgb24ToBitmap565(rgb24Mirror(rgb24Bytes,width,height)!!,width, height))
+            imageView.setImageBitmap(rgb24ToBitmap565(rgb24Mirror(rgb24Bytes, width, height)!!, width, height))
 
-            imageView.setImageBitmap(i420ToBitmap8888(rgb24ToI420(rgb24Bytes,width, height)!!,width, height))
-            imageView.setImageBitmap(nv21ToBitmap8888(rgb24ToNV21(rgb24Bytes,width, height)!!,width, height))
-            imageView.setImageBitmap(rgbaToBitmap8888(rgb24ToRgba(rgb24Bytes,width, height)!!,width, height))
-            imageView.setImageBitmap(rgb565ToBitmap8888(rgb24ToRgb565(rgb24Bytes,width, height)!!,width, height))
+            imageView.setImageBitmap(i420ToBitmap8888(rgb24ToI420(rgb24Bytes, width, height)!!, width, height))
+            imageView.setImageBitmap(nv21ToBitmap8888(rgb24ToNV21(rgb24Bytes, width, height)!!, width, height))
+            imageView.setImageBitmap(rgbaToBitmap8888(rgb24ToRgba(rgb24Bytes, width, height)!!, width, height))
+            imageView.setImageBitmap(rgb565ToBitmap8888(rgb24ToRgb565(rgb24Bytes, width, height)!!, width, height))
         }
 
 
@@ -108,7 +123,7 @@ class MainActivity : AppCompatActivity() {
 
             val rgb565Bytes = rgbaToRgb565(rgbaBytes, width, height)
             //imageView.setImageBitmap(rgb565ToBitmap8888(rgb565Bytes!!,width,height))
-            imageView.setImageBitmap(rgb565ToBitmap565(rgb565Bytes!!,width,height))
+            imageView.setImageBitmap(rgb565ToBitmap565(rgb565Bytes!!, width, height))
         }
 
 

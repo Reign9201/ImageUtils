@@ -7,6 +7,12 @@ import android.renderscript.Element;
 import android.renderscript.RenderScript;
 import android.renderscript.ScriptIntrinsicYuvToRGB;
 import android.renderscript.Type;
+import android.text.TextUtils;
+
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 
 
 /**
@@ -58,5 +64,58 @@ public class Test {
         out.destroy();
 
         return bmpout;
+    }
+
+    public static void saveBitmapToPNG(Bitmap bitmap, String imagePath, String imageName) {
+        if (TextUtils.isEmpty(imageName)) {
+            return;
+        }
+        String png = ".png";
+        String fileName = imageName.toLowerCase().endsWith(png) ? imageName : imageName + png;
+        saveBitmapToLocal(bitmap, imagePath, fileName, Bitmap.CompressFormat.PNG);
+    }
+
+    /**
+     * 保存图片到本地
+     *
+     * @param bitmap    图像源bitmap
+     * @param imagePath 保存图片的路径
+     * @param imageName 保存图片的名称
+     * @param format    保存文件的格式{@link Bitmap.CompressFormat}
+     */
+    public static void saveBitmapToLocal(Bitmap bitmap, String imagePath, String imageName, Bitmap.CompressFormat format) {
+        if (bitmap == null || TextUtils.isEmpty(imagePath) || TextUtils.isEmpty(imageName)) {
+            return;
+        }
+        File dir = new File(imagePath);
+        if (!dir.exists()) {
+            dir.mkdirs();
+        }
+        byte[] bytes = bitmap2Bytes(bitmap, format);
+        FileOutputStream fos = null;
+        try {
+            fos = new FileOutputStream(new File(dir, imageName));
+            fos.write(bytes);
+            fos.flush();
+        } catch (IOException ignore) {
+
+        } finally {
+            if (fos != null) {
+                try {
+                    fos.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
+    public static byte[] bitmap2Bytes(final Bitmap bitmap, final Bitmap.CompressFormat format) {
+        if (bitmap == null) {
+            return null;
+        }
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        bitmap.compress(format, 100, baos);
+        return baos.toByteArray();
     }
 }
