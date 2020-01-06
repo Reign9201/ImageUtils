@@ -19,7 +19,7 @@ enum class ImageFormat(var format: Int) {
     ARGB_8888(5)
 }
 ```
-关于以上数据格式详细说明，请参见：[TODO记得补充]()
+关于以上数据格式详细说明，请参见：[Android中常用图像格式说明](https://github.com/Reign9201/ImageUtils/blob/master/doc/Android%E4%B8%AD%E5%B8%B8%E7%94%A8%E5%9B%BE%E5%83%8F%E6%A0%BC%E5%BC%8F%E8%AF%B4%E6%98%8E.md)
 
 ---
 

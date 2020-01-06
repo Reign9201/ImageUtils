@@ -10,7 +10,7 @@
 ### RGB565
 Android中自带的一种图像格式，这个图像格式像素排布如下图：
 
-![image](http://q3ir1l9qp.bkt.clouddn.com/Fn4a2dwtltehsXUwhMvB_AcNcQB1)
+![image](https://user-gold-cdn.xitu.io/2020/1/6/16f786b2d18a48ce?w=1078&h=265&f=png&s=7622)
 
 `RGB565` 每个像素点都有红、绿、蓝三个原色，其中 `R` 原色占用 `5 bit`，`G` 原色占用 `6 bit`，`B` 原色占用 `5 bit`，也就是说一个像素点总占用 `5 + 6 + 5 = 16 bit`。
 
@@ -25,7 +25,7 @@ Android中自带的一种图像格式，这个图像格式像素排布如下图�
 ---
 
 ### RGB24
-![image](http://q3ir1l9qp.bkt.clouddn.com/FpbJdR2aROgOrfK2X1u4DIFZLvMJ)
+![image](https://user-gold-cdn.xitu.io/2020/1/6/16f786b9fefceb97?w=1078&h=264&f=png&s=7049)
 
 如上图，`RGB24` 其真正的排序是 `BGR BGR ...` 这种排序的，而并非 `RGB RGB ...` 这种排序。
 
@@ -38,7 +38,7 @@ Android中自带的一种图像格式，这个图像格式像素排布如下图�
 ---
 
 ### ARGB_8888
-![image](http://q3ir1l9qp.bkt.clouddn.com/FuYLrPtZ1oDE3Y2wkfKccmHxj5Yy)
+![image](https://user-gold-cdn.xitu.io/2020/1/6/16f786c18365deeb?w=1428&h=269&f=png&s=10187)
 
 如上图，`ARGB_8888` 作为在Android中我们最常用的一种图像格式，其实其真正的图像格式为 `RGBA`。
 
@@ -55,7 +55,7 @@ Android中自带的一种图像格式，这个图像格式像素排布如下图�
 所谓的 `YUV` 格式指的是图像的颜色编码采用的是 明亮度 和 色度来指定像素的颜色，而不是通常使用的三原色来指定。
 例如下图：
 
-![YUV444](http://q3ir1l9qp.bkt.clouddn.com/FiRH3OJNDwVY6m0FX7mjWl4LAR9N)
+![YUV444](https://user-gold-cdn.xitu.io/2020/1/6/16f786ca0d4c80c1?w=1079&h=373&f=png&s=22843)
 
 上图是一个 `YUV444` 的图像格式。
 - `Y` 代表明亮度，也即灰阶值
@@ -90,7 +90,7 @@ Android中自带的一种图像格式，这个图像格式像素排布如下图�
 
 实际上，目前使用最多的 `YUV` 图像采集格式主要包含 `YUV422` 和 `YUV420` 这两种采集方式，而 `I420` 和 `NV21` 恰好是这种数据采集方式，`YUV420` 数据采集大概是下面这种方式：
 
-![YUV420](http://q3ir1l9qp.bkt.clouddn.com/Fsx2tn2OoKzgpdCin7JOz0wjgU8U)
+![YUV420](https://user-gold-cdn.xitu.io/2020/1/6/16f786d124727e3a?w=1127&h=524&f=png&s=35527)
 
 针对 `YUV420` 这种采用方式，有以下几个特点：
 - 每个像素的 `Y` 分量必须采集
@@ -139,7 +139,7 @@ Android中自带的一种图像格式，这个图像格式像素排布如下图�
 
 如下图，即为 一个分辨率为 `8 * 4` 的`I420`图像的存储格式图：
 
-![I420](http://q3ir1l9qp.bkt.clouddn.com/FkLDEOlbjV4Ejp22S4zvGozxuOXZ)
+![I420](https://user-gold-cdn.xitu.io/2020/1/6/16f786d7e733e921?w=700&h=558&f=png&s=19910)
 
 <font color=red>我们可以把这种存储方式理解成三层，其中第一层固定存储 `Y` 分量，第二和第三层根据实际格式分别存储 `U` 和 `V`（或 `V` 和 `U`）</font>
 
@@ -152,7 +152,7 @@ Android中自带的一种图像格式，这个图像格式像素排布如下图�
 
 下图为一个分辨率为 `8 * 4` 的 `NV21` 格式图像存储图：
 
-![NV21](http://q3ir1l9qp.bkt.clouddn.com/FonfbBq5n60wteMdPqnu5sjSBhvp)
+![NV21](https://user-gold-cdn.xitu.io/2020/1/3/16f6979499afac76?w=582&h=507&f=png&s=17353)
 
 至此，关于 `I420` 和 `NV21` 这两种图像格式就介绍完了，有关更多的关于 `YUV` 的其他格式，可点击 [此处](http://msdn.microsoft.com/library/windows/desktop/dd206750.aspx) 进行了解。
 
