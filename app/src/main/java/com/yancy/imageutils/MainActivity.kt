@@ -7,6 +7,7 @@ import android.os.Bundle
 import com.yancy.imageutils.test.Test
 import com.yancy.yuvutils.ImageUtils
 import com.yancy.yuvutils.YuvUtils
+import com.yancy.yuvutils.entry.ClipRect
 import kotlinx.android.synthetic.main.activity_main.*
 import java.nio.ByteBuffer
 import java.nio.IntBuffer
@@ -24,33 +25,32 @@ class MainActivity : AppCompatActivity() {
         )
             .request(this)
 
-        val bitmap = BitmapFactory.decodeFile("/sdcard/test.png")
+//        val bitmap = BitmapFactory.decodeFile("/sdcard/bg04.jpg")
+        val bitmap = BitmapFactory.decodeFile("/sdcard/test__1.png")
+//        val bitmap = BitmapFactory.decodeFile("/sdcard/test.png")
         val width = bitmap.width
         val height = bitmap.height
         if (bitmap == null) {
             LogUtils.e("bitmap is null.")
             return
         }
-        LogUtils.d("width = $width, height = $height")
+        LogUtils.d("width = $width, height = $height")  //533 300
 
-//        test()
 
-        //rgbaConvert(bitmap, width, height)
-        //rgb24Convert(bitmap, width, height)
+        imageView.setImageBitmap(bitmap)
 
-        val rgba = ImageUtils.bitmapToRgba(bitmap)
+        val i420Data = YuvUtils.bitmapToNV21(bitmap)
+        LogUtils.e("size = ${i420Data?.size}")
 
-        /*val rotateToBitmap =
-            YuvUtils.dataClipRotateToBitmap(
-                rgba!!, 5, width, height, 90,
-                Rect(100, 0, 300, 300), 5, false
-            )*/
 
-        val dataMirror = YuvUtils.dataMirror(rgba!!, width, height, 5, 5, true)
-        val bitmap8888 = ImageUtils.rgbaToBitmap8888(dataMirror!!, width, height)
+        // 532 302
+        val rect = Rect(0,100,300,400)
+        //ClipRect()
+        val targetImg =
+            YuvUtils.dataClipRotateToBitmap(i420Data!!, 1, width, height, 270, null, 5, false)
+        targetIv.setImageBitmap(targetImg)
+      //  targetIv.setImageBitmap(ImageUtils.i420ToBitmap8888(i420Data!!, width, height))
 
-        imageView.setImageBitmap(bitmap8888)
-        Test.saveBitmapToPNG(bitmap8888, "sdcard/ABCD/", "" + System.nanoTime())
 
     }
 
@@ -130,7 +130,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun onPreviewFrame(data: ByteArray, width: Int, height: Int) {
-        val bitmap:Bitmap? = ImageUtils.nv21ToBitmap8888(data, width, height, 270)
+        val bitmap: Bitmap? = ImageUtils.nv21ToBitmap8888(data, width, height, 270)
 
         //我们还可以用二次封装的调用
         ImageUtils.nv21ToBitmap8888(data, width, height)

@@ -2,6 +2,7 @@ package com.yancy.yuvutils
 
 import android.graphics.Bitmap
 import android.graphics.Rect
+import android.util.Log
 import com.yancy.yuvutils.annotation.RotateDegree
 import com.yancy.yuvutils.entry.FilterMode
 import com.yancy.yuvutils.entry.ImageInfo
@@ -417,7 +418,7 @@ object ImageUtils {
         dstFormat: ImageFormat,
         priorityClip: Boolean = false
     ): Bitmap? {
-        require(!(dstFormat != ImageFormat.RGB_565 || dstFormat != ImageFormat.ARGB_8888)) { "This format is not supported yet." }
+        require(!(dstFormat != ImageFormat.ARGB_8888 && dstFormat != ImageFormat.RGB_565)) { "This format is not supported yet." }
         return YuvUtils.dataClipRotateToBitmap(data, srcFormat.format, width, height, degree, rect, dstFormat.format, priorityClip)
     }
 

@@ -5,6 +5,7 @@ import android.graphics.Rect
 import com.yancy.yuvutils.annotation.RotateDegree
 import com.yancy.yuvutils.annotation.SupportFilter
 import com.yancy.yuvutils.annotation.SupportFormat
+import com.yancy.yuvutils.entry.ClipRect
 
 /**
  * 说明：基于libyuv库做的Android中常用的图像数据格式转换
@@ -25,6 +26,7 @@ object YuvUtils {
      * @return 转换后的数据，转换格式异常会导致转换识别，返回为 null
      */
     external fun bitmapToNV21(bitmap: Bitmap?): ByteArray?
+
     external fun bitmapToRgb565(bitmap: Bitmap?): ByteArray?
     external fun bitmapToRgb24(bitmap: Bitmap?): ByteArray?
     external fun bitmapToRgba(bitmap: Bitmap?): ByteArray?
@@ -35,6 +37,7 @@ object YuvUtils {
      * int数组类型数据与byte数组类型数据互转操作
      */
     external fun intArrayToByteArray(intArray: IntArray): ByteArray?
+
     external fun byteArrayToIntArray(byteArray: ByteArray): IntArray?
 
 
@@ -74,7 +77,7 @@ object YuvUtils {
         height: Int,
         @SupportFormat dataFormat: Int,
         bitmapConfig: Int
-    ):Bitmap?
+    ): Bitmap?
 
     /**
      * 各种类型的图像数据裁剪和旋转操作
@@ -99,6 +102,19 @@ object YuvUtils {
         priorityClip: Boolean = false
     ): ByteArray?
 
+    fun dataClipRotate(
+        data: ByteArray,
+        @SupportFormat dataFormat: Int,
+        width: Int,
+        height: Int,
+        @RotateDegree degree: Int,
+        clipRect: ClipRect,
+        targetFormat: Int,
+        priorityClip: Boolean = false
+    ): ByteArray? {
+        return dataClipRotate(data, dataFormat, width, height, degree, clipRect.convert(), targetFormat, priorityClip)
+    }
+
     /**
      * 各种类型的图像数据裁剪和旋转后生成位图操作
      *
@@ -121,6 +137,20 @@ object YuvUtils {
         bitmapConfig: Int,
         priorityClip: Boolean = false
     ): Bitmap?
+
+    fun dataClipRotateToBitmap(
+        data: ByteArray,
+        @SupportFormat dataFormat: Int,
+        width: Int,
+        height: Int,
+        @RotateDegree degree: Int,
+        clipRect: ClipRect,
+        bitmapConfig: Int,
+        priorityClip: Boolean = false
+    ): Bitmap? {
+        return dataClipRotateToBitmap(data, dataFormat, width, height, degree, clipRect.convert(), bitmapConfig, priorityClip)
+    }
+
 
     /**
      * 图像数据镜像翻转操作

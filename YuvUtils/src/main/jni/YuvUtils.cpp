@@ -234,9 +234,9 @@ jbyteArray bitmapToNV21(JNIEnv *env, jclass clazz, jobject jbitmap) {
         *dataSize = width * height + ((width + 1) / 2) * ((height + 1) / 2) * 2;
         *target_data = new uint8[*dataSize];
         if (format == ARGB_8888) {
-            return yancy::RGBAToNV21(pixel, (width + 1) / 2 * 2, height, *target_data);
+            return yancy::RGBAToNV21(pixel, width, height, *target_data);
         } else if (format == RGB_565) {
-            return yancy::RGB565ToNV21(pixel, (width + 1) / 2 * 2, height, *target_data);
+            return yancy::RGB565ToNV21(pixel, width, height, *target_data);
         } else {
             return -1;
         }
@@ -306,9 +306,9 @@ jbyteArray bitmapToI420(JNIEnv *env, jclass clazz, jobject jbitmap) {
         *dataSize = width * height + ((width + 1) / 2) * ((height + 1) / 2) * 2;
         *target_data = new uint8[*dataSize];
         if (format == ARGB_8888) {
-            return yancy::RGBAToI420(pixel, (width + 1) / 2 * 2, height, *target_data);
+            return yancy::RGBAToI420(pixel, width, height, *target_data);
         } else if (format == RGB_565) {
-            return yancy::RGB565ToI420(pixel, (width + 1) / 2 * 2, height, *target_data);
+            return yancy::RGB565ToI420(pixel, width, height, *target_data);
         } else {
             return -1;
         }
@@ -541,8 +541,12 @@ int convertDataHandle(JNIEnv *env, jint dataFormat,
             if (degree == 90) {
                 convertData->crop_x = top;
                 convertData->crop_y = height - right;
+                /*logger::error("x = ", convertData->crop_x, ", y = ", convertData->crop_y, ", tw = ", convertData->targetWidth,
+                              ", th = ", convertData->targetHeight);*/
                 if (right > height || bottom > width
-                    || convertData->crop_x > convertData->targetWidth || convertData->crop_y > convertData->targetHeight) {
+                    //                    || convertData->crop_x > convertData->targetWidth || convertData->crop_y > convertData->targetHeight
+                    || convertData->crop_x > height || convertData->crop_y > width
+                        ) {
                     logger::error(
                             "rect width or height more than rotated image width or height, please check it.");
                     return -1;
@@ -553,8 +557,12 @@ int convertDataHandle(JNIEnv *env, jint dataFormat,
             } else if (degree == -90 || degree == 270) {
                 convertData->crop_x = width - bottom;
                 convertData->crop_y = left;
+                /*logger::error("x = ", convertData->crop_x, ", y = ", convertData->crop_y, ", tw = ", convertData->targetWidth,
+                              ", th = ", convertData->targetHeight);*/
                 if (right > height || bottom > width
-                    || convertData->crop_x > convertData->targetWidth || convertData->crop_y > convertData->targetHeight) {
+                    //                    || convertData->crop_x > convertData->targetWidth || convertData->crop_y > convertData->targetHeight
+                    || convertData->crop_x > height || convertData->crop_y > width
+                        ) {
                     logger::error(
                             "rect width or height more than rotated image width or height, please check it.");
                     return -1;
